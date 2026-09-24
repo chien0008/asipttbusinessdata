@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智財技轉業務 - 資助研究計畫歷年暨月度數據分析儀表板</title>
+    <title>智財技轉業務 - 110-115年成長與下滑趨勢分析儀表板</title>
     <!-- Google Fonts & Font Awesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -23,97 +23,120 @@
         <!-- 頁頭 -->
         <header class="header">
             <div class="brand">
-                <div class="brand-icon"><i class="fa-solid fa-handshake-angle"></i></div>
+                <div class="brand-icon"><i class="fa-solid fa-chart-line"></i></div>
                 <div>
-                    <h1 class="header-title">智財技轉業務：資助研究計畫數據分析儀表板</h1>
-                    <p class="header-subtitle">110 年至 115 年跨年度簽約金額與件數對比 ＆ 月度趨勢鑽取</p>
+                    <h1 class="header-title">智財技轉業務數據分析與攀升/下滑幅度監控</h1>
+                    <p class="header-subtitle">110 年至 115 年資助計畫、科技移轉及產學合作實收成長率趨勢</p>
                 </div>
             </div>
-            <div class="header-tag">
-                <i class="fa-solid fa-clock-rotate-left"></i> 處務會議專用簡報模式
+            <div class="header-controls">
+                <label for="year-select"><i class="fa-regular fa-calendar"></i> 聚焦觀看年度：</label>
+                <select id="year-select" onchange="focusYearData(this.value)">
+                    <!-- 由 JS 動態生成選項 -->
+                </select>
             </div>
         </header>
 
         <!-- 主體內容 -->
         <main class="main-content">
 
-            <!-- KPI 卡片摘要 -->
-            <section class="kpi-section">
-                <div class="kpi-grid">
-                    <div class="kpi-card">
-                        <div class="kpi-header">
-                            <span class="kpi-label">全期累積總金額 (110-115)</span>
-                            <i class="fa-solid fa-coins kpi-icon"></i>
-                        </div>
-                        <div class="kpi-value" id="total-amount">0 萬元</div>
-                        <div class="kpi-sub">涵蓋跨年度資助研究計畫</div>
+            <!-- 年度對比與攀升/下滑分析模條 -->
+            <section class="trend-section">
+                <div class="trend-header">
+                    <h2><i class="fa-solid fa-arrow-trend-up"></i> <span id="current-focused-year">113年度</span> 數據變動與前一年度攀升/下滑比較</h2>
+                    <span class="trend-subtitle">相較於前一年度之成長率 (%) 與實施增減數</span>
+                </div>
+                
+                <div class="trend-grid">
+                    <!-- 卡片 1：資助計畫金額變動 -->
+                    <div class="trend-card">
+                        <span class="trend-label">資助研究計畫簽約金額</span>
+                        <div class="trend-value" id="sponsored-amount-val">0 萬元</div>
+                        <div class="trend-badge" id="sponsored-amount-badge">--</div>
                     </div>
 
-                    <div class="kpi-card">
-                        <div class="kpi-header">
-                            <span class="kpi-label">全期累積總件數 (110-115)</span>
-                            <i class="fa-solid fa-file-contract kpi-icon"></i>
-                        </div>
-                        <div class="kpi-value" id="total-cases">0 件</div>
-                        <div class="kpi-sub">涵蓋跨年度簽約總量</div>
+                    <!-- 卡片 2：資助計畫件數變動 -->
+                    <div class="trend-card">
+                        <span class="trend-label">資助研究計畫簽約件數</span>
+                        <div class="trend-value" id="sponsored-cases-val">0 件</div>
+                        <div class="trend-badge" id="sponsored-cases-badge">--</div>
                     </div>
 
-                    <div class="kpi-card highlight">
-                        <div class="kpi-header">
-                            <span class="kpi-label" id="selected-year-label">當前選取年度</span>
-                            <span class="badge-active" id="selected-year-badge">113 年度</span>
-                        </div>
-                        <div class="kpi-value" id="selected-year-amount">0 萬元</div>
-                        <div class="kpi-sub" id="selected-year-growth">較前一年度: --</div>
+                    <!-- 卡片 3：科技移轉收入變動 -->
+                    <div class="trend-card">
+                        <span class="trend-label">科技移轉收入實收</span>
+                        <div class="trend-value" id="tech-revenue-val">0 萬元</div>
+                        <div class="trend-badge" id="tech-revenue-badge">--</div>
+                    </div>
+
+                    <!-- 卡片 4：產學＋技轉總金額變動 -->
+                    <div class="trend-card highlight">
+                        <span class="trend-label">總實收經費 (技轉＋產學)</span>
+                        <div class="trend-value" id="grand-total-val">0 萬元</div>
+                        <div class="trend-badge" id="grand-total-badge">--</div>
                     </div>
                 </div>
             </section>
 
-            <!-- 圖表區塊 1：110-115 年度比較圖 (可點擊鑽取) -->
+            <!-- 圖表模組一：資助研究計畫 110-115 攀升與月度鑽取 -->
             <section class="chart-section">
                 <div class="chart-card">
                     <div class="chart-header">
                         <div>
                             <h3 class="chart-title">
-                                <i class="fa-solid fa-chart-column"></i> 110 - 115 每年度資助研究計畫簽約比較圖
+                                <i class="fa-solid fa-chart-column text-teal"></i> 一、110-115 資助研究計畫簽約金額與件數攀升對比
                             </h3>
-                            <p class="chart-desc">💡 提示：點擊上方任一「年份柱狀圖」，可於下方展開該年度 1~12 月之明細數據</p>
-                        </div>
-                        <div class="legend-hint">
-                            <span class="dot bar-dot"></span> 簽約金額 (萬元)
-                            <span class="dot line-dot"></span> 簽約件數 (件)
+                            <p class="chart-desc">💡 將滑鼠移至圖表點上可直接查看相較於上年度之「攀升/下滑%」，點擊柱狀圖可開啟該年 1-12 月明細</p>
                         </div>
                     </div>
                     <div class="chart-container">
-                        <canvas id="yearlyChart"></canvas>
+                        <canvas id="sponsoredYearlyChart"></canvas>
                     </div>
                 </div>
             </section>
 
-            <!-- 圖表區塊 2：月份明細圖 (由上方點擊後連動更新) -->
-            <section class="chart-section" id="monthly-section">
+            <!-- 鑽取月度圖表 -->
+            <section class="chart-section" id="monthly-drilldown-section">
+                <div class="chart-card border-accent">
+                    <div class="chart-header">
+                        <div>
+                            <h3 class="chart-title">
+                                <i class="fa-solid fa-calendar-days text-blue"></i> <span id="drilldown-year-title">113 年度</span> 1~12 月逐月簽約件數與金額趨勢
+                            </h3>
+                            <p class="chart-desc">一年內每個月的件數與金額起伏</p>
+                        </div>
+                        <button class="btn-reset" onclick="resetYearSelection()">
+                            <i class="fa-solid fa-rotate-left"></i> 重置回最新年度
+                        </button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="sponsoredMonthlyChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 圖表模組二：科技移轉與產學合作實收對比及總額攀升曲線 -->
+            <section class="chart-section">
                 <div class="chart-card">
                     <div class="chart-header">
                         <div>
                             <h3 class="chart-title">
-                                <i class="fa-solid fa-calendar-days"></i> <span id="monthly-chart-title">113 年度</span> 各月份簽約件數與金額趨勢
+                                <i class="fa-solid fa-chart-area text-amber"></i> 二、110-115 科技移轉收入及產學合作實收攀升/下滑幅度
                             </h3>
-                            <p class="chart-desc">顯示一年內每個月的計畫簽約分佈</p>
+                            <p class="chart-desc">折線代表「每年總金額（科技移轉＋產學合作）」之攀升走勢</p>
                         </div>
-                        <button class="btn-reset" onclick="resetYearSelection()">
-                            <i class="fa-solid fa-arrows-rotate"></i> 重置回最新年度
-                        </button>
                     </div>
                     <div class="chart-container">
-                        <canvas id="monthlyChart"></canvas>
+                        <canvas id="revenueYearlyChart"></canvas>
                     </div>
                 </div>
             </section>
 
         </main>
 
+        <!-- 頁尾 -->
         <footer class="footer">
-            <p>© 智財技轉業務處務會議數據系統 Intellectual Property & Technology Transfer Analytics</p>
+            <p>© 智財技轉業務處務會議數據管理系統 Intellectual Property & Technology Transfer Analytics</p>
         </footer>
     </div>
 
