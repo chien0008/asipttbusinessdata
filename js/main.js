@@ -4,9 +4,9 @@
 
 let targetConfig = {
     techLicense:   { target: 37, actual: 10, unit: "件" },
-    techItem:      { target: 45, actual: 12, unit: "項" },
-    ad:            { target: 20, actual: 8,  unit: "件" },
-    grantProject:  { target: 60, actual: 25, unit: "件" }
+    techItem:      { target: 37, actual: 12, unit: "件" },
+    ad:            { target: 5, actual: 0,  unit: "件" },
+    grantProject:  { target: 33, actual: 20, unit: "件" }
 };
 
 // 1. 資助研究計畫數據 (含 15,337, 15,246, 7,615 等真實金額)
@@ -30,30 +30,30 @@ const revenueData = [
 ];
 
 const royaltyData = [
-    { year: "110年度", amount: 480 },
-    { year: "111年度", amount: 620 },
-    { year: "112年度", amount: 850 },
-    { year: "113年度", amount: 1100 },
-    { year: "114年度", amount: 1350 },
-    { year: "115年度", amount: 1600 }
+    { year: "110年度", amount: 606 },
+    { year: "111年度", amount: 913 },
+    { year: "112年度", amount: 559 },
+    { year: "113年度", amount: 713 },
+    { year: "114年度", amount: 754 },
+    { year: "115年度", amount: 794 }
 ];
 
 const techTransferBreakdownData = [
-    { year: "110年度", exclusive: 1, nonExclusive: 22, material: 85 },
-    { year: "111年度", exclusive: 1, nonExclusive: 26, material: 92 },
-    { year: "112年度", exclusive: 2, nonExclusive: 29, material: 101 },
-    { year: "113年度", exclusive: 2, nonExclusive: 31, material: 105 },
+    { year: "110年度", exclusive: 12, nonExclusive: 49, material: 183 },
+    { year: "111年度", exclusive: 6, nonExclusive: 47, material: 152 },
+    { year: "112年度", exclusive: 2, nonExclusive: 48, material: 128 },
+    { year: "113年度", exclusive: 0, nonExclusive: 34, material: 122 },
     { year: "114年度", exclusive: 2, nonExclusive: 34, material: 111 },
-    { year: "115年度", exclusive: 3, nonExclusive: 38, material: 118 }
+    { year: "115年度", exclusive: 2, nonExclusive: 8, material: 105 }
 ];
 
 const contractAndIncomeData = [
-    { year: "110年度", contractValue: 2400, incomeValue: 12717 },
-    { year: "111年度", contractValue: 2800, incomeValue: 6185  },
-    { year: "112年度", contractValue: 3100, incomeValue: 4653  },
-    { year: "113年度", contractValue: 3600, incomeValue: 4271  },
-    { year: "114年度", contractValue: 4100, incomeValue: 39358 },
-    { year: "115年度", contractValue: 4600, incomeValue: 2708  }
+    { year: "110年度", contractValue: 24179, incomeValue: 12717 },
+    { year: "111年度", contractValue: 35661, incomeValue: 6185  },
+    { year: "112年度", contractValue: 8252, incomeValue: 4653  },
+    { year: "113年度", contractValue: 4524, incomeValue: 4271  },
+    { year: "114年度", contractValue: 4843, incomeValue: 39358 },
+    { year: "115年度", contractValue: 2199, incomeValue: 2708  }
 ];
 
 const yoyHistoricalDatabase = {
