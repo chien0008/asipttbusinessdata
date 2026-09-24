@@ -1,5 +1,10 @@
 /* ==============================================
-   1. 第一項與第二項歷史數據庫 (110 - 115)
+   1. 註冊 ChartDataLabels 外掛 (投影幕數字直顯)
+   ============================================== */
+Chart.register(ChartDataLabels);
+
+/* ==============================================
+   2. 第一項與第二項歷史數據庫 (110 - 115)
    ============================================== */
 
 const sponsoredData = [
@@ -21,7 +26,7 @@ const revenueData = [
 ];
 
 /* ==============================================
-   2. 第三項：同期 YoY 比對歷史資料庫
+   3. 第三項：同期 YoY 比對歷史資料庫
    ============================================== */
 
 const yoyHistoricalDatabase = {
@@ -50,7 +55,7 @@ let yoyCasesChartInstance = null;
 let yoyAmountChartInstance = null;
 
 /* ==============================================
-   3. 初始化載入
+   4. 初始化載入
    ============================================== */
 window.addEventListener('DOMContentLoaded', () => {
     document.getElementById('yoy-date-input').value = "2026-09-24";
@@ -61,7 +66,7 @@ window.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ==============================================
-   4. 第一項與第二項圖表邏輯
+   5. 第一項與第二項圖表邏輯 (含數據直接標示)
    ============================================== */
 function renderSponsoredYearlyChart() {
     const ctx = document.getElementById('sponsoredYearlyChart').getContext('2d');
@@ -70,8 +75,38 @@ function renderSponsoredYearlyChart() {
         data: {
             labels: sponsoredData.map(item => item.year),
             datasets: [
-                { type: 'bar', label: '簽約金額 (萬元)', data: sponsoredData.map(item => item.amount), backgroundColor: 'rgba(13, 110, 99, 0.85)', borderRadius: 8, yAxisID: 'yAmount' },
-                { type: 'line', label: '簽約件數 (件)', data: sponsoredData.map(item => item.cases), borderColor: '#0284c7', borderWidth: 3, pointRadius: 6, yAxisID: 'yCases' }
+                {
+                    type: 'bar',
+                    label: '簽約金額 (萬元)',
+                    data: sponsoredData.map(item => item.amount),
+                    backgroundColor: 'rgba(6, 95, 70, 0.9)',
+                    borderRadius: 8,
+                    yAxisID: 'yAmount',
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'start',
+                        color: '#ffffff',
+                        font: { weight: 'bold', size: 14 },
+                        formatter: (val) => `${val.toLocaleString()}萬`
+                    }
+                },
+                {
+                    type: 'line',
+                    label: '簽約件數 (件)',
+                    data: sponsoredData.map(item => item.cases),
+                    borderColor: '#0284c7',
+                    borderWidth: 4,
+                    pointRadius: 7,
+                    pointBackgroundColor: '#0284c7',
+                    yAxisID: 'yCases',
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        color: '#0284c7',
+                        font: { weight: 'bold', size: 15 },
+                        formatter: (val) => `${val}件`
+                    }
+                }
             ]
         },
         options: {
@@ -81,8 +116,9 @@ function renderSponsoredYearlyChart() {
                 if (elements.length > 0) openMonthlyDrawer(elements[0].index);
             },
             scales: {
-                yAmount: { type: 'linear', position: 'left', beginAtZero: true, title: { display: true, text: '金額 (萬元)' } },
-                yCases: { type: 'linear', position: 'right', beginAtZero: true, grid: { drawOnChartArea: false }, title: { display: true, text: '件數 (件)' } }
+                yAmount: { type: 'linear', position: 'left', beginAtZero: true, ticks: { font: { size: 14, weight: 'bold' } } },
+                yCases: { type: 'linear', position: 'right', beginAtZero: true, grid: { drawOnChartArea: false }, ticks: { font: { size: 14, weight: 'bold' } } },
+                x: { ticks: { font: { size: 15, weight: 'bold' } } }
             }
         }
     });
@@ -111,8 +147,31 @@ function updateSponsoredMonthlyChart(yearIndex) {
         data: {
             labels: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
             datasets: [
-                { type: 'bar', label: '每月金額 (萬元)', data: yearObj.monthlyAmount, backgroundColor: 'rgba(2, 132, 199, 0.75)', borderRadius: 6, yAxisID: 'yMonthAmount' },
-                { type: 'line', label: '每月件數 (件)', data: yearObj.monthlyCases, borderColor: '#0d6e63', borderWidth: 2, pointRadius: 4, yAxisID: 'yMonthCases' }
+                {
+                    type: 'bar',
+                    label: '每月金額 (萬元)',
+                    data: yearObj.monthlyAmount,
+                    backgroundColor: 'rgba(2, 132, 199, 0.85)',
+                    borderRadius: 6,
+                    yAxisID: 'yMonthAmount',
+                    datalabels: { display: false }
+                },
+                {
+                    type: 'line',
+                    label: '每月件數 (件)',
+                    data: yearObj.monthlyCases,
+                    borderColor: '#065f46',
+                    borderWidth: 3,
+                    pointRadius: 5,
+                    yAxisID: 'yMonthCases',
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        color: '#065f46',
+                        font: { weight: 'bold', size: 12 },
+                        formatter: (val) => `${val}件`
+                    }
+                }
             ]
         },
         options: {
@@ -120,7 +179,8 @@ function updateSponsoredMonthlyChart(yearIndex) {
             maintainAspectRatio: false,
             scales: {
                 yMonthAmount: { type: 'linear', position: 'left', beginAtZero: true },
-                yMonthCases: { type: 'linear', position: 'right', beginAtZero: true, grid: { drawOnChartArea: false } }
+                yMonthCases: { type: 'linear', position: 'right', beginAtZero: true, grid: { drawOnChartArea: false } },
+                x: { ticks: { font: { size: 13, weight: 'bold' } } }
             }
         }
     });
@@ -133,21 +193,39 @@ function renderRevenueYearlyChart() {
         data: {
             labels: revenueData.map(item => item.year),
             datasets: [
-                { type: 'bar', label: '科技移轉收入 (萬元)', data: revenueData.map(item => item.techTransfer), backgroundColor: 'rgba(13, 110, 99, 0.85)', borderRadius: 6 },
-                { type: 'bar', label: '產學合作實收經費 (萬元)', data: revenueData.map(item => item.industryCoop), backgroundColor: 'rgba(2, 132, 199, 0.85)', borderRadius: 6 },
-                { type: 'line', label: '總金額 (科技移轉＋產學合作)', data: revenueData.map(item => item.techTransfer + item.industryCoop), borderColor: '#d97706', borderWidth: 3, pointRadius: 6, tension: 0.3 }
+                { type: 'bar', label: '科技移轉收入 (萬元)', data: revenueData.map(item => item.techTransfer), backgroundColor: 'rgba(6, 95, 70, 0.9)', borderRadius: 6, datalabels: { display: false } },
+                { type: 'bar', label: '產學合作實收經費 (萬元)', data: revenueData.map(item => item.industryCoop), backgroundColor: 'rgba(2, 132, 199, 0.9)', borderRadius: 6, datalabels: { display: false } },
+                {
+                    type: 'line',
+                    label: '總金額 (科技移轉＋產學合作)',
+                    data: revenueData.map(item => item.techTransfer + item.industryCoop),
+                    borderColor: '#b45309',
+                    borderWidth: 4,
+                    pointRadius: 7,
+                    pointBackgroundColor: '#b45309',
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        color: '#b45309',
+                        font: { weight: 'bold', size: 15 },
+                        formatter: (val) => `${val.toLocaleString()}萬`
+                    }
+                }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            scales: { y: { beginAtZero: true, title: { display: true, text: '金額 (萬元)' } } }
+            scales: {
+                y: { beginAtZero: true, ticks: { font: { size: 14, weight: 'bold' } } },
+                x: { ticks: { font: { size: 15, weight: 'bold' } } }
+            }
         }
     });
 }
 
 /* ==============================================
-   5. 第三項邏輯：同期 YoY 選擇器與圖表直接呈現
+   6. 第三項邏輯：同期 YoY 投影幕大字直顯與雙對比圖
    ============================================== */
 function setQuickDate(type) {
     const dateInput = document.getElementById('yoy-date-input');
@@ -186,15 +264,12 @@ function handleYoyDateChange(selectedDateStr) {
     document.getElementById('label-curr-date').textContent = dataObj.currDateLabel;
     document.getElementById('label-prev-date').textContent = dataObj.prevDateLabel;
 
-    // 計算總件數與總金額增減，並渲染至圖表上方 Badge
     updateYoyTopBadges(dataObj);
-
-    // 繪製強化的 YoY 圖表 (含詳盡 Tooltip)
     renderYoyCharts(dataObj);
 }
 
 function updateYoyTopBadges(dataObj) {
-    // 1. 計算件數總和與增減
+    // 1. 件數總和
     const totalCasesCurr = dataObj.cases.techLicense + dataObj.cases.materialTransfer + dataObj.cases.sponsoredProject;
     const totalCasesPrev = dataObj.casesPrev.techLicense + dataObj.casesPrev.materialTransfer + dataObj.casesPrev.sponsoredProject;
     const diffCases = totalCasesCurr - totalCasesPrev;
@@ -202,14 +277,14 @@ function updateYoyTopBadges(dataObj) {
 
     const casesBadgeEl = document.getElementById('cases-summary-badge');
     if (diffCases >= 0) {
-        casesBadgeEl.className = 'summary-badge badge-up';
-        casesBadgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> 本期 ${totalCasesCurr} 件 (較去年 +${diffCases}件, +${percentCases}%)`;
+        casesBadgeEl.className = 'summary-badge-lg badge-up';
+        casesBadgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> 總件數：本期 ${totalCasesCurr} 件 (較去年同期 +${diffCases}件, +${percentCases}%)`;
     } else {
-        casesBadgeEl.className = 'summary-badge badge-down';
-        casesBadgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-down"></i> 本期 ${totalCasesCurr} 件 (較去年 -${Math.abs(diffCases)}件, -${percentCases}%)`;
+        casesBadgeEl.className = 'summary-badge-lg badge-down';
+        casesBadgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-down"></i> 總件數：本期 ${totalCasesCurr} 件 (較去年同期 -${Math.abs(diffCases)}件, -${percentCases}%)`;
     }
 
-    // 2. 計算金額總和與增減
+    // 2. 金額總和
     const totalAmtCurr = dataObj.amounts.techRevenueTotal + dataObj.amounts.sponsoredRealized;
     const totalAmtPrev = dataObj.amountsPrev.techRevenueTotal + dataObj.amountsPrev.sponsoredRealized;
     const diffAmt = totalAmtCurr - totalAmtPrev;
@@ -217,16 +292,16 @@ function updateYoyTopBadges(dataObj) {
 
     const amtBadgeEl = document.getElementById('amounts-summary-badge');
     if (diffAmt >= 0) {
-        amtBadgeEl.className = 'summary-badge badge-up';
-        amtBadgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> 本期實收 ${totalAmtCurr.toLocaleString()} 萬 (較去年 +${diffAmt.toLocaleString()}萬, +${percentAmt}%)`;
+        amtBadgeEl.className = 'summary-badge-lg badge-up';
+        amtBadgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> 總實收：本期 ${totalAmtCurr.toLocaleString()} 萬 (較去年 +${diffAmt.toLocaleString()}萬, +${percentAmt}%)`;
     } else {
-        amtBadgeEl.className = 'summary-badge badge-down';
-        amtBadgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-down"></i> 本期實收 ${totalAmtCurr.toLocaleString()} 萬 (較去年 -${Math.abs(diffAmt).toLocaleString()}萬, -${percentAmt}%)`;
+        amtBadgeEl.className = 'summary-badge-lg badge-down';
+        amtBadgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-down"></i> 總實收：本期 ${totalAmtCurr.toLocaleString()} 萬 (較去年 -${Math.abs(diffAmt).toLocaleString()}萬, -${percentAmt}%)`;
     }
 }
 
 function renderYoyCharts(dataObj) {
-    // A. 件數同期對比圖表
+    // A. 件數同期對比圖表 (柱體上方直接標示數值)
     const ctxCases = document.getElementById('yoyCasesChart').getContext('2d');
     if (yoyCasesChartInstance) yoyCasesChartInstance.destroy();
 
@@ -238,15 +313,39 @@ function renderYoyCharts(dataObj) {
         data: {
             labels: ['技術授權件數', '材料移轉件數', '資助研究計畫件數'],
             datasets: [
-                { label: '本期件數', data: casesCurrArray, backgroundColor: '#0d6e63', borderRadius: 6 },
-                { label: '去年同期件數', data: casesPrevArray, backgroundColor: '#cbd5e1', borderRadius: 6 }
+                {
+                    label: '本期件數',
+                    data: casesCurrArray,
+                    backgroundColor: '#065f46',
+                    borderRadius: 6,
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        color: '#065f46',
+                        font: { weight: 'bold', size: 14 },
+                        formatter: (val) => `${val}件`
+                    }
+                },
+                {
+                    label: '去年同期件數',
+                    data: casesPrevArray,
+                    backgroundColor: '#94a3b8',
+                    borderRadius: 6,
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        color: '#475569',
+                        font: { weight: 'bold', size: 13 },
+                        formatter: (val) => `${val}件`
+                    }
+                }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'top' },
+                legend: { position: 'top', labels: { font: { size: 14, weight: 'bold' } } },
                 tooltip: {
                     callbacks: {
                         afterBody: (tooltipItems) => {
@@ -261,7 +360,10 @@ function renderYoyCharts(dataObj) {
                     }
                 }
             },
-            scales: { y: { beginAtZero: true, title: { display: true, text: '件數 (件)' } } }
+            scales: {
+                y: { beginAtZero: true, ticks: { font: { size: 13, weight: 'bold' } } },
+                x: { ticks: { font: { size: 14, weight: 'bold' } } }
+            }
         }
     });
 
@@ -275,17 +377,41 @@ function renderYoyCharts(dataObj) {
     yoyAmountChartInstance = new Chart(ctxAmount, {
         type: 'bar',
         data: {
-            labels: ['科技移轉總收入', '權利金', '合約總價值(現+股)', '科移收入(現+股)', '資助計畫實收'],
+            labels: ['科移總收入', '權利金', '合約總價值(現+股)', '科移收入(現+股)', '資助計畫實收'],
             datasets: [
-                { label: '本期金額 (萬元)', data: amtCurrArray, backgroundColor: '#0284c7', borderRadius: 6 },
-                { label: '去年同期金額 (萬元)', data: amtPrevArray, backgroundColor: '#94a3b8', borderRadius: 6 }
+                {
+                    label: '本期金額 (萬元)',
+                    data: amtCurrArray,
+                    backgroundColor: '#0284c7',
+                    borderRadius: 6,
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        color: '#0284c7',
+                        font: { weight: 'bold', size: 13 },
+                        formatter: (val) => `${val.toLocaleString()}萬`
+                    }
+                },
+                {
+                    label: '去年同期金額 (萬元)',
+                    data: amtPrevArray,
+                    backgroundColor: '#94a3b8',
+                    borderRadius: 6,
+                    datalabels: {
+                        anchor: 'end',
+                        align: 'top',
+                        color: '#475569',
+                        font: { weight: 'bold', size: 12 },
+                        formatter: (val) => `${val.toLocaleString()}萬`
+                    }
+                }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'top' },
+                legend: { position: 'top', labels: { font: { size: 14, weight: 'bold' } } },
                 tooltip: {
                     callbacks: {
                         afterBody: (tooltipItems) => {
@@ -300,7 +426,10 @@ function renderYoyCharts(dataObj) {
                     }
                 }
             },
-            scales: { y: { beginAtZero: true, title: { display: true, text: '金額 (萬元)' } } }
+            scales: {
+                y: { beginAtZero: true, ticks: { font: { size: 13, weight: 'bold' } } },
+                x: { ticks: { font: { size: 13, weight: 'bold' } } }
+            }
         }
     });
 }
