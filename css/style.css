@@ -416,7 +416,6 @@ body {
     color: var(--text-primary);
 }
 
-/* 確保 DataLabels 標籤在柱體上方有充足空間顯示 */
 .chart-container-lg {
     position: relative;
     height: 320px;
