@@ -60,10 +60,10 @@ const yoyHistoricalDatabase = {
     "2026-09-24": {
         currDateLabel: "115 年 09 月 24 日",
         prevDateLabel: "114 年 09 月 24 日",
-        cases: { techLicense: 48, materialTransfer: 52, sponsoredProject: 20 },
-        casesPrev: { techLicense: 40, materialTransfer: 45, sponsoredProject: 30 },
-        amounts: { techRevenueTotal: 2708, royalty: 1350, contractValueTotal: 3400, techRevenueCashStock: 2708, sponsoredRealized: 5452 },
-        amountsPrev: { techRevenueTotal: 39358, royalty: 1100, contractValueTotal: 2900, techRevenueCashStock: 39358, sponsoredRealized: 5132 }
+        cases: { techLicense: 10, materialTransfer: 105, sponsoredProject: 20 },
+        casesPrev: { techLicense: 31, materialTransfer: 85, sponsoredProject: 24 },
+        amounts: { techRevenueTotal: 2708, royalty: 794, contractValueTotal: 2199, techRevenueCashStock: 5218, sponsoredRealized: 4274 },
+        amountsPrev: { techRevenueTotal: 2539, royalty: 635, contractValueTotal: 1755, techRevenueCashStock: 2539, sponsoredRealized: 6318 }
     },
     "2026-09-19": {
         currDateLabel: "115 年 09 月 19 日",
