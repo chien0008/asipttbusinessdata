@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智財技轉業務 - 資助研究計畫歷年暨月度數據分析儀表板</title>
+    <!-- Google Fonts & Font Awesome -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- External CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- 頁頭 -->
+        <header class="header">
+            <div class="brand">
+                <div class="brand-icon"><i class="fa-solid fa-handshake-angle"></i></div>
+                <div>
+                    <h1 class="header-title">智財技轉業務：資助研究計畫數據分析儀表板</h1>
+                    <p class="header-subtitle">110 年至 115 年跨年度簽約金額與件數對比 ＆ 月度趨勢鑽取</p>
+                </div>
+            </div>
+            <div class="header-tag">
+                <i class="fa-solid fa-clock-rotate-left"></i> 處務會議專用簡報模式
+            </div>
+        </header>
+
+        <!-- 主體內容 -->
+        <main class="main-content">
+
+            <!-- KPI 卡片摘要 -->
+            <section class="kpi-section">
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-label">全期累積總金額 (110-115)</span>
+                            <i class="fa-solid fa-coins kpi-icon"></i>
+                        </div>
+                        <div class="kpi-value" id="total-amount">0 萬元</div>
+                        <div class="kpi-sub">涵蓋跨年度資助研究計畫</div>
+                    </div>
+
+                    <div class="kpi-card">
+                        <div class="kpi-header">
+                            <span class="kpi-label">全期累積總件數 (110-115)</span>
+                            <i class="fa-solid fa-file-contract kpi-icon"></i>
+                        </div>
+                        <div class="kpi-value" id="total-cases">0 件</div>
+                        <div class="kpi-sub">涵蓋跨年度簽約總量</div>
+                    </div>
+
+                    <div class="kpi-card highlight">
+                        <div class="kpi-header">
+                            <span class="kpi-label" id="selected-year-label">當前選取年度</span>
+                            <span class="badge-active" id="selected-year-badge">113 年度</span>
+                        </div>
+                        <div class="kpi-value" id="selected-year-amount">0 萬元</div>
+                        <div class="kpi-sub" id="selected-year-growth">較前一年度: --</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 圖表區塊 1：110-115 年度比較圖 (可點擊鑽取) -->
+            <section class="chart-section">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                            <h3 class="chart-title">
+                                <i class="fa-solid fa-chart-column"></i> 110 - 115 每年度資助研究計畫簽約比較圖
+                            </h3>
+                            <p class="chart-desc">💡 提示：點擊上方任一「年份柱狀圖」，可於下方展開該年度 1~12 月之明細數據</p>
+                        </div>
+                        <div class="legend-hint">
+                            <span class="dot bar-dot"></span> 簽約金額 (萬元)
+                            <span class="dot line-dot"></span> 簽約件數 (件)
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="yearlyChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 圖表區塊 2：月份明細圖 (由上方點擊後連動更新) -->
+            <section class="chart-section" id="monthly-section">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                            <h3 class="chart-title">
+                                <i class="fa-solid fa-calendar-days"></i> <span id="monthly-chart-title">113 年度</span> 各月份簽約件數與金額趨勢
+                            </h3>
+                            <p class="chart-desc">顯示一年內每個月的計畫簽約分佈</p>
+                        </div>
+                        <button class="btn-reset" onclick="resetYearSelection()">
+                            <i class="fa-solid fa-arrows-rotate"></i> 重置回最新年度
+                        </button>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="monthlyChart"></canvas>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <footer class="footer">
+            <p>© 智財技轉業務處務會議數據系統 Intellectual Property & Technology Transfer Analytics</p>
+        </footer>
+    </div>
+
+    <!-- External JS -->
+    <script src="js/main.js"></script>
+</body>
+</html>
