@@ -1,7 +1,8 @@
 /* ==============================================
-   1. 第二項：技術授權達成率可編輯資料庫 (預設值)
+   1. 完整資料庫定義 (110 - 115 年度)
    ============================================== */
 
+// 第二分頁：四大達成率可編輯資料庫
 let targetConfig = {
     techLicense:   { target: 37, actual: 10, unit: "件" },
     techItem:      { target: 45, actual: 12, unit: "項" },
@@ -9,17 +10,7 @@ let targetConfig = {
     grantProject:  { target: 60, actual: 25, unit: "件" }
 };
 
-// 五、權利金 (110 - 115 年度，單位：萬元)
-const royaltyData = [
-    { year: "110年度", amount: 480 },
-    { year: "111年度", amount: 620 },
-    { year: "112年度", amount: 850 },
-    { year: "113年度", amount: 1100 },
-    { year: "114年度", amount: 1350 },
-    { year: "115年度", amount: 1600 }
-];
-
-// 第一項：資助計畫數據
+// 第一分頁：110-115 資助計畫
 const sponsoredData = [
     { year: "110年度", amount: 3200, cases: 42, monthlyCases: [3, 2, 4, 3, 5, 4, 3, 4, 3, 4, 4, 3], monthlyAmount: [220, 180, 310, 240, 380, 290, 210, 320, 250, 300, 310, 190] },
     { year: "111年度", amount: 3850, cases: 50, monthlyCases: [4, 3, 5, 4, 5, 4, 4, 5, 4, 4, 5, 3], monthlyAmount: [280, 210, 390, 310, 410, 320, 290, 380, 300, 330, 400, 230] },
@@ -29,7 +20,47 @@ const sponsoredData = [
     { year: "115年度", amount: 6300, cases: 78, monthlyCases: [6, 6, 8, 7, 8, 7, 7, 8, 7, 6, 5, 3], monthlyAmount: [460, 410, 680, 590, 720, 610, 510, 640, 530, 480, 420, 250] }
 ];
 
-// 第三項：同期比對資料庫
+// 第一分頁：110-115 科技移轉及產學合作
+const revenueData = [
+    { year: "110年度", techTransfer: 1200, industryCoop: 2800 },
+    { year: "111年度", techTransfer: 1450, industryCoop: 3100 },
+    { year: "112年度", techTransfer: 1680, industryCoop: 3500 },
+    { year: "113年度", techTransfer: 1950, industryCoop: 4100 },
+    { year: "114年度", techTransfer: 2200, industryCoop: 4600 },
+    { year: "115年度", techTransfer: 2500, industryCoop: 5100 }
+];
+
+// 第二分頁：5. 權利金 (110 - 115)
+const royaltyData = [
+    { year: "110年度", amount: 480 },
+    { year: "111年度", amount: 620 },
+    { year: "112年度", amount: 850 },
+    { year: "113年度", amount: 1100 },
+    { year: "114年度", amount: 1350 },
+    { year: "115年度", amount: 1600 }
+];
+
+// 第二分頁：6. 110-115 科技移轉件數明細
+const techTransferBreakdownData = [
+    { year: "110年度", exclusive: 1, nonExclusive: 22, material: 85 },
+    { year: "111年度", exclusive: 1, nonExclusive: 26, material: 92 },
+    { year: "112年度", exclusive: 2, nonExclusive: 29, material: 101 },
+    { year: "113年度", exclusive: 2, nonExclusive: 31, material: 105 },
+    { year: "114年度", exclusive: 2, nonExclusive: 34, material: 111 }, // 符合範例需求
+    { year: "115年度", exclusive: 3, nonExclusive: 38, material: 118 }
+];
+
+// 第二分頁：7. 110-115 授權合約總價值及科技移轉總收入 (現金+股票)
+const contractAndIncomeData = [
+    { year: "110年度", contractValue: 2400, incomeValue: 1550 },
+    { year: "111年度", contractValue: 2800, incomeValue: 1820 },
+    { year: "112年度", contractValue: 3100, incomeValue: 2100 },
+    { year: "113年度", contractValue: 3600, incomeValue: 2450 },
+    { year: "114年度", contractValue: 4100, incomeValue: 2800 },
+    { year: "115年度", contractValue: 4600, incomeValue: 3200 }
+];
+
+// 第一分頁：2. YoY 比對資料庫
 const yoyHistoricalDatabase = {
     "2026-09-24": {
         currDateLabel: "115 年 09 月 24 日",
@@ -49,62 +80,49 @@ const yoyHistoricalDatabase = {
     }
 };
 
-// 全域圖表 Instance 暫存
+// Chart Instances 暫存
 let doughnutInstances = {};
 let royaltyChartInstance = null;
 let sponsoredYearlyChartInstance = null;
 let sponsoredMonthlyChartInstance = null;
+let revenueYearlyChartInstance = null;
 let yoyCasesChartInstance = null;
 let yoyAmountChartInstance = null;
+let techTransferBreakdownChartInstance = null;
+let contractAndIncomeChartInstance = null;
 
 /* ==============================================
-   2. 初始化與 ScrollSpy 置頂導覽監聽
+   2. 初始化與主 Tab 切換邏輯
    ============================================== */
 window.addEventListener('DOMContentLoaded', () => {
-    // 1. 第一項
+    // 渲染第一分頁圖表
     renderSponsoredYearlyChart();
-
-    // 2. 第二項
-    renderAllDoughnuts();
-    renderRoyaltyChart();
-
-    // 3. 第三項
+    renderRevenueYearlyChart();
     document.getElementById('yoy-date-input').value = "2026-09-24";
     handleYoyDateChange("2026-09-24");
 
-    // 4. 監聽捲動事件以高亮置頂按鈕 (ScrollSpy)
-    window.addEventListener('scroll', handleScrollSpy);
+    // 預先繪製第二分頁圖表 (隱藏狀態)
+    renderAllDoughnuts();
+    renderRoyaltyChart();
+    renderTechTransferBreakdownChart();
+    renderContractAndIncomeChart();
 });
 
-function handleScrollSpy() {
-    const sections = ['section-1', 'section-2', 'section-3'];
-    const navBtns = [
-        document.getElementById('nav-btn-1'),
-        document.getElementById('nav-btn-2'),
-        document.getElementById('nav-btn-3')
-    ];
+function switchMainTab(tabId) {
+    document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
-    let currentSectionIndex = 0;
-    const scrollPos = window.scrollY + 200;
-
-    sections.forEach((secId, index) => {
-        const el = document.getElementById(secId);
-        if (el && el.offsetTop <= scrollPos) {
-            currentSectionIndex = index;
-        }
-    });
-
-    navBtns.forEach((btn, index) => {
-        if (index === currentSectionIndex) {
-            btn.classList.add('active');
-        } else {
-            btn.classList.remove('active');
-        }
-    });
+    if (tabId === 'tab-1') {
+        document.getElementById('tab-btn-1').classList.add('active');
+        document.getElementById('tab-1').classList.add('active');
+    } else if (tabId === 'tab-2') {
+        document.getElementById('tab-btn-2').classList.add('active');
+        document.getElementById('tab-2').classList.add('active');
+    }
 }
 
 /* ==============================================
-   3. 第二項：極光漸層環形圖繪製 logic
+   3. 第二分頁圖表繪製邏輯 (達成率 + 件數 + 總價值)
    ============================================== */
 
 function createGradient(ctx, color1, color2) {
@@ -128,9 +146,7 @@ function renderSingleDoughnut(canvasId, textContainerId, itemKey, colorStart, co
     centerEl.querySelector('.rate-val').textContent = `${rate}%`;
     centerEl.querySelector('.count-val').textContent = `${actual}/${target} ${cfg.unit}`;
 
-    if (doughnutInstances[canvasId]) {
-        doughnutInstances[canvasId].destroy();
-    }
+    if (doughnutInstances[canvasId]) doughnutInstances[canvasId].destroy();
 
     const gradient = createGradient(ctx, colorStart, colorEnd);
 
@@ -152,9 +168,7 @@ function renderSingleDoughnut(canvasId, textContainerId, itemKey, colorStart, co
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    callbacks: {
-                        label: (context) => ` ${context.label}: ${context.raw} ${cfg.unit}`
-                    }
+                    callbacks: { label: (context) => ` ${context.label}: ${context.raw} ${cfg.unit}` }
                 }
             }
         }
@@ -168,6 +182,7 @@ function renderAllDoughnuts() {
     renderSingleDoughnut('grantProjectDoughnut', 'grantProjectCenterText', 'grantProject', '#d97706', '#fbbf24');
 }
 
+// 5. 權利金
 function renderRoyaltyChart() {
     const ctx = document.getElementById('royaltyYearlyChart').getContext('2d');
     royaltyChartInstance = new Chart(ctx, {
@@ -189,6 +204,51 @@ function renderRoyaltyChart() {
     });
 }
 
+// 6. 110-115 每年度科技移轉件數 (專屬授權 + 非專屬授權 + 有償材料移轉)
+function renderTechTransferBreakdownChart() {
+    const ctx = document.getElementById('techTransferBreakdownChart').getContext('2d');
+    techTransferBreakdownChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: techTransferBreakdownData.map(item => item.year),
+            datasets: [
+                { label: '專屬授權', data: techTransferBreakdownData.map(item => item.exclusive), backgroundColor: '#0d6e63', borderRadius: 4 },
+                { label: '非專屬授權', data: techTransferBreakdownData.map(item => item.nonExclusive), backgroundColor: '#0284c7', borderRadius: 4 },
+                { label: '有償材料移轉', data: techTransferBreakdownData.map(item => item.material), backgroundColor: '#d97706', borderRadius: 4 }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                x: { stacked: true },
+                y: { stacked: true, beginAtZero: true, title: { display: true, text: '件數 (件)' } }
+            }
+        }
+    });
+}
+
+// 7. 110-115 授權合約總價值及科技移轉總收入 (現金＋股票)
+function renderContractAndIncomeChart() {
+    const ctx = document.getElementById('contractAndIncomeChart').getContext('2d');
+    contractAndIncomeChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: contractAndIncomeData.map(item => item.year),
+            datasets: [
+                { type: 'bar', label: '授權合約總價值 (現金＋股票)', data: contractAndIncomeData.map(item => item.contractValue), backgroundColor: 'rgba(2, 132, 199, 0.85)', borderRadius: 6 },
+                { type: 'bar', label: '科技移轉總收入 (現金＋股票)', data: contractAndIncomeData.map(item => item.incomeValue), backgroundColor: 'rgba(13, 110, 99, 0.85)', borderRadius: 6 }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, title: { display: true, text: '金額 (萬元)' } } }
+        }
+    });
+}
+
+/* Modal 表單編輯邏輯 */
 function openTargetModal() {
     document.getElementById('input-tech-target').value  = targetConfig.techLicense.target;
     document.getElementById('input-tech-actual').value  = targetConfig.techLicense.actual;
@@ -233,7 +293,7 @@ function handleTargetSubmit(e) {
 }
 
 /* ==============================================
-   4. 第一項與第三項圖表 (同前)
+   4. 第一分頁圖表邏輯 (同前)
    ============================================== */
 function renderSponsoredYearlyChart() {
     const ctx = document.getElementById('sponsoredYearlyChart').getContext('2d');
@@ -294,6 +354,26 @@ function updateSponsoredMonthlyChart(yearIndex) {
                 yMonthAmount: { type: 'linear', position: 'left', beginAtZero: true },
                 yMonthCases: { type: 'linear', position: 'right', beginAtZero: true, grid: { drawOnChartArea: false } }
             }
+        }
+    });
+}
+
+function renderRevenueYearlyChart() {
+    const ctx = document.getElementById('revenueYearlyChart').getContext('2d');
+    revenueYearlyChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: revenueData.map(item => item.year),
+            datasets: [
+                { type: 'bar', label: '科技移轉收入 (萬元)', data: revenueData.map(item => item.techTransfer), backgroundColor: 'rgba(13, 110, 99, 0.85)', borderRadius: 5 },
+                { type: 'bar', label: '產學合作實收經費 (萬元)', data: revenueData.map(item => item.industryCoop), backgroundColor: 'rgba(2, 132, 199, 0.85)', borderRadius: 5 },
+                { type: 'line', label: '總金額 (科技移轉＋產學合作)', data: revenueData.map(item => item.techTransfer + item.industryCoop), borderColor: '#d97706', borderWidth: 2.5, pointRadius: 5, tension: 0.3 }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, title: { display: true, text: '金額 (萬元)' } } }
         }
     });
 }
