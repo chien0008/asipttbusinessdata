@@ -1,9 +1,6 @@
 /* ==============================================
-   1. 完整資料庫定義 (已更新圖片最新數據)
+   1. 完整資料庫定義 (已更新最新數據)
    ============================================== */
-
-// 註冊 DataLabels 外掛 (預設全域不顯示，僅在 YoY 同期圖表中啟用)
-Chart.register(ChartDataLabels);
 
 let targetConfig = {
     techLicense:   { target: 37, actual: 10, unit: "件" },
@@ -12,7 +9,6 @@ let targetConfig = {
     grantProject:  { target: 33, actual: 20, unit: "件" }
 };
 
-// 1. 資助研究計畫數據 (含 15,337, 15,246, 7,615 等真實金額)
 const sponsoredData = [
     { year: "110年度", amount: 15337, cases: 63, monthlyCases: [5, 4, 6, 5, 7, 6, 5, 6, 5, 5, 5, 4], monthlyAmount: [1200, 1100, 1500, 1300, 1600, 1400, 1100, 1300, 1200, 1400, 1237, 1000] },
     { year: "111年度", amount: 15246, cases: 64, monthlyCases: [5, 5, 6, 5, 7, 6, 5, 6, 5, 5, 5, 4], monthlyAmount: [1246, 1100, 1400, 1300, 1500, 1400, 1200, 1300, 1100, 1300, 1200, 1200] },
@@ -22,7 +18,6 @@ const sponsoredData = [
     { year: "115年度", amount: 5452,  cases: 20, monthlyCases: [1, 1, 2, 2, 3, 2, 2, 2, 2, 1, 1, 1], monthlyAmount: [450, 350, 600, 500, 700, 550, 400, 550, 450, 450, 252, 150] }
 ];
 
-// 3. ✨ 科技移轉收入及產學合作實收經費
 const revenueData = [
     { year: "110年度", techTransfer: 12717, industryCoop: 15436 },
     { year: "111年度", techTransfer: 6185,  industryCoop: 11196 },
@@ -91,9 +86,7 @@ let contractAndIncomeChartInstance = null;
 
 Chart.defaults.font.family = "'Plus Jakarta Sans', 'Noto Sans TC', sans-serif";
 Chart.defaults.color = '#64748B';
-Chart.defaults.plugins.datalabels.display = false; // 全局預設不顯示 DataLabels
 
-/* 💎 工具函式：產生透明質感漸層 */
 function getTranslucentGradient(ctx, colorTopHex, opacityTop, opacityBottom) {
     const gradient = ctx.createLinearGradient(0, 0, 0, 320);
     const rgb = hexToRgb(colorTopHex);
@@ -513,7 +506,7 @@ function handleYoyDateChange(selectedDateStr) {
     renderYoyCharts(dataObj);
 }
 
-/* ✨ 繪製 YoY 圖表並於「本期柱體」頂部動態計算標示 +- 差異與 % 數 */
+/* ✨ 滑鼠移動到柱狀圖上時，於 Tooltip 動態呈現本期數值、增減件數/金額與 % 數 */
 function renderYoyCharts(dataObj) {
     // 1. 件數同期對比圖表
     const ctxCases = document.getElementById('yoyCasesChart').getContext('2d');
@@ -537,29 +530,33 @@ function renderYoyCharts(dataObj) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            layout: { padding: { top: 25 } },
             plugins: {
                 legend: { position: 'top' },
-                datalabels: {
-                    display: (context) => context.datasetIndex === 0, // 僅在本期柱體顯示
-                    anchor: 'end',
-                    align: 'top',
-                    font: { weight: 'bold', size: 11 },
-                    formatter: (value, context) => {
-                        const idx = context.dataIndex;
-                        const prevVal = casesPrevArray[idx];
-                        const diff = value - prevVal;
-                        const percent = prevVal > 0 ? ((Math.abs(diff) / prevVal) * 100).toFixed(1) : 0;
-                        
-                        if (diff === 0) return `${value}件 (持平)`;
-                        const sign = diff > 0 ? '+' : '-';
-                        const arrow = diff > 0 ? '↑' : '↓';
-                        return `${value}件 (${arrow}${sign}${Math.abs(diff)}件, ${sign}${percent}%)`;
-                    },
-                    color: (context) => {
-                        const idx = context.dataIndex;
-                        const diff = casesCurrArray[idx] - casesPrevArray[idx];
-                        return diff >= 0 ? '#059669' : '#DC2626'; // 成長為深綠、下滑為紅色
+                tooltip: {
+                    padding: 12,
+                    titleFont: { size: 14, weight: 'bold' },
+                    bodyFont: { size: 13 },
+                    callbacks: {
+                        label: (context) => {
+                            const idx = context.dataIndex;
+                            const isCurr = context.datasetIndex === 0;
+                            const val = context.raw;
+
+                            if (!isCurr) {
+                                return `去年同期: ${val} 件`;
+                            }
+
+                            const prevVal = casesPrevArray[idx];
+                            const diff = val - prevVal;
+                            const percent = prevVal > 0 ? ((Math.abs(diff) / prevVal) * 100).toFixed(1) : 0;
+                            const sign = diff >= 0 ? '+' : '-';
+                            const arrow = diff > 0 ? '↑' : (diff < 0 ? '↓' : '–');
+
+                            return [
+                                `本期數據: ${val} 件`,
+                                `與去年同期相比: ${arrow} ${sign}${Math.abs(diff)} 件 (${sign}${percent}%)`
+                            ];
+                        }
                     }
                 }
             },
@@ -592,29 +589,33 @@ function renderYoyCharts(dataObj) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            layout: { padding: { top: 25 } },
             plugins: {
                 legend: { position: 'top' },
-                datalabels: {
-                    display: (context) => context.datasetIndex === 0, // 僅在本期柱體顯示
-                    anchor: 'end',
-                    align: 'top',
-                    font: { weight: 'bold', size: 10 },
-                    formatter: (value, context) => {
-                        const idx = context.dataIndex;
-                        const prevVal = amtPrevArray[idx];
-                        const diff = value - prevVal;
-                        const percent = prevVal > 0 ? ((Math.abs(diff) / prevVal) * 100).toFixed(1) : 0;
-                        
-                        if (diff === 0) return `${value.toLocaleString()}萬 (持平)`;
-                        const sign = diff > 0 ? '+' : '-';
-                        const arrow = diff > 0 ? '↑' : '↓';
-                        return `${value.toLocaleString()}萬 (${arrow}${sign}${Math.abs(diff).toLocaleString()}萬, ${sign}${percent}%)`;
-                    },
-                    color: (context) => {
-                        const idx = context.dataIndex;
-                        const diff = amtCurrArray[idx] - amtPrevArray[idx];
-                        return diff >= 0 ? '#059669' : '#DC2626'; // 成長為深綠、下滑為紅色
+                tooltip: {
+                    padding: 12,
+                    titleFont: { size: 14, weight: 'bold' },
+                    bodyFont: { size: 13 },
+                    callbacks: {
+                        label: (context) => {
+                            const idx = context.dataIndex;
+                            const isCurr = context.datasetIndex === 0;
+                            const val = context.raw;
+
+                            if (!isCurr) {
+                                return `去年同期: ${val.toLocaleString()} 萬元`;
+                            }
+
+                            const prevVal = amtPrevArray[idx];
+                            const diff = val - prevVal;
+                            const percent = prevVal > 0 ? ((Math.abs(diff) / prevVal) * 100).toFixed(1) : 0;
+                            const sign = diff >= 0 ? '+' : '-';
+                            const arrow = diff > 0 ? '↑' : (diff < 0 ? '↓' : '–');
+
+                            return [
+                                `本期數據: ${val.toLocaleString()} 萬元`,
+                                `與去年同期相比: ${arrow} ${sign}${Math.abs(diff).toLocaleString()} 萬元 (${sign}${percent}%)`
+                            ];
+                        }
                     }
                 }
             },
