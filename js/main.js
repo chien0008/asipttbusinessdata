@@ -2,10 +2,13 @@
    1. 完整資料庫定義 (已更新圖片最新數據)
    ============================================== */
 
+// 註冊 DataLabels 外掛 (預設全域不顯示，僅在 YoY 同期圖表中啟用)
+Chart.register(ChartDataLabels);
+
 let targetConfig = {
     techLicense:   { target: 37, actual: 10, unit: "件" },
     techItem:      { target: 37, actual: 12, unit: "件" },
-    ad:            { target: 5, actual: 0,  unit: "件" },
+    ad:            { target: 5,  actual: 0,  unit: "件" },
     grantProject:  { target: 33, actual: 20, unit: "件" }
 };
 
@@ -19,13 +22,13 @@ const sponsoredData = [
     { year: "115年度", amount: 5452,  cases: 20, monthlyCases: [1, 1, 2, 2, 3, 2, 2, 2, 2, 1, 1, 1], monthlyAmount: [450, 350, 600, 500, 700, 550, 400, 550, 450, 450, 252, 150] }
 ];
 
-// 3. ✨ 科技移轉收入及產學合作實收經費 (依圖片更新完整數據)
+// 3. ✨ 科技移轉收入及產學合作實收經費
 const revenueData = [
     { year: "110年度", techTransfer: 12717, industryCoop: 15436 },
     { year: "111年度", techTransfer: 6185,  industryCoop: 11196 },
     { year: "112年度", techTransfer: 4653,  industryCoop: 14335 },
     { year: "113年度", techTransfer: 4271,  industryCoop: 7187  },
-    { year: "114年度", techTransfer: 3935, industryCoop: 8206  },
+    { year: "114年度", techTransfer: 39358, industryCoop: 8206  },
     { year: "115年度", techTransfer: 2708,  industryCoop: 4274  }
 ];
 
@@ -40,20 +43,20 @@ const royaltyData = [
 
 const techTransferBreakdownData = [
     { year: "110年度", exclusive: 12, nonExclusive: 49, material: 183 },
-    { year: "111年度", exclusive: 6, nonExclusive: 47, material: 152 },
-    { year: "112年度", exclusive: 2, nonExclusive: 48, material: 128 },
-    { year: "113年度", exclusive: 0, nonExclusive: 34, material: 122 },
-    { year: "114年度", exclusive: 2, nonExclusive: 34, material: 111 },
-    { year: "115年度", exclusive: 2, nonExclusive: 8, material: 105 }
+    { year: "111年度", exclusive: 6,  nonExclusive: 47, material: 152 },
+    { year: "112年度", exclusive: 2,  nonExclusive: 48, material: 128 },
+    { year: "113年度", exclusive: 0,  nonExclusive: 34, material: 122 },
+    { year: "114年度", exclusive: 2,  nonExclusive: 34, material: 111 },
+    { year: "115年度", exclusive: 2,  nonExclusive: 8,  material: 105 }
 ];
 
 const contractAndIncomeData = [
     { year: "110年度", contractValue: 24179, incomeValue: 12717 },
     { year: "111年度", contractValue: 35661, incomeValue: 6185  },
-    { year: "112年度", contractValue: 8252, incomeValue: 4653  },
-    { year: "113年度", contractValue: 4524, incomeValue: 4271  },
-    { year: "114年度", contractValue: 4843, incomeValue: 39358 },
-    { year: "115年度", contractValue: 2199, incomeValue: 2708  }
+    { year: "112年度", contractValue: 8252,  incomeValue: 4653  },
+    { year: "113年度", contractValue: 4524,  incomeValue: 4271  },
+    { year: "114年度", contractValue: 4843,  incomeValue: 39358 },
+    { year: "115年度", contractValue: 2199,  incomeValue: 2708  }
 ];
 
 const yoyHistoricalDatabase = {
@@ -70,7 +73,7 @@ const yoyHistoricalDatabase = {
         prevDateLabel: "114 年 09 月 18 日",
         cases: { techLicense: 45, materialTransfer: 50, sponsoredProject: 18 },
         casesPrev: { techLicense: 38, materialTransfer: 43, sponsoredProject: 28 },
-        amounts: { techRevenueTotal: 2500, royalty: 1300, contractValueTotal: 3250, techRevenueCashStock: 2500, sponsoredRealized: 5000 },
+        amounts: { techRevenueTotal: 2500, royalty: 1300, contractValueTotal: 3250, techRevenueCashStock: 2500, sponsoredRealized: 4000 },
         amountsPrev: { techRevenueTotal: 38000, royalty: 1050, contractValueTotal: 2800, techRevenueCashStock: 38000, sponsoredRealized: 4800 }
     }
 };
@@ -88,6 +91,7 @@ let contractAndIncomeChartInstance = null;
 
 Chart.defaults.font.family = "'Plus Jakarta Sans', 'Noto Sans TC', sans-serif";
 Chart.defaults.color = '#64748B';
+Chart.defaults.plugins.datalabels.display = false; // 全局預設不顯示 DataLabels
 
 /* 💎 工具函式：產生透明質感漸層 */
 function getTranslucentGradient(ctx, colorTopHex, opacityTop, opacityBottom) {
@@ -317,7 +321,7 @@ function handleTargetSubmit(e) {
 }
 
 /* ==============================================
-   4. 第一分頁圖表 (1. 資助研究計畫 & 2. YoY & 3. 科技移轉)
+   4. 第一分頁圖表 (1. 資助研究計畫 & 2. YoY 同期比較 & 3. 科技移轉)
    ============================================== */
 
 function renderSponsoredYearlyChart() {
@@ -492,56 +496,26 @@ function handleYoyDateChange(selectedDateStr) {
         const day = String(dateObj.getDate()).padStart(2, '0');
 
         const prevYearRoc = currYearRoc - 1;
-        let prevDayStr = day;
 
         dataObj = {
             currDateLabel: `${currYearRoc} 年 ${month} 月 ${day} 日`,
-            prevDateLabel: `${prevYearRoc} 年 ${month} 月 ${prevDayStr} 日`,
-            cases: { techLicense: 46, materialTransfer: 51, sponsoredProject: 19 },
-            casesPrev: { techLicense: 39, materialTransfer: 44, sponsoredProject: 29 },
-            amounts: { techRevenueTotal: 2708, royalty: 1320, contractValueTotal: 3300, techRevenueCashStock: 2708, sponsoredRealized: 5300 },
-            amountsPrev: { techRevenueTotal: 39358, royalty: 1080, contractValueTotal: 2850, techRevenueCashStock: 39358, sponsoredRealized: 5000 }
+            prevDateLabel: `${prevYearRoc} 年 ${month} 月 ${day} 日`,
+            cases: { techLicense: 10, materialTransfer: 105, sponsoredProject: 20 },
+            casesPrev: { techLicense: 31, materialTransfer: 85, sponsoredProject: 24 },
+            amounts: { techRevenueTotal: 2708, royalty: 794, contractValueTotal: 2199, techRevenueCashStock: 5218, sponsoredRealized: 4274 },
+            amountsPrev: { techRevenueTotal: 2539, royalty: 635, contractValueTotal: 1755, techRevenueCashStock: 2539, sponsoredRealized: 6318 }
         };
     }
 
     document.getElementById('label-curr-date').textContent = dataObj.currDateLabel;
     document.getElementById('label-prev-date').textContent = dataObj.prevDateLabel;
 
-    updateYoyTopBadges(dataObj);
     renderYoyCharts(dataObj);
 }
 
-function updateYoyTopBadges(dataObj) {
-    const totalCasesCurr = dataObj.cases.techLicense + dataObj.cases.materialTransfer + dataObj.cases.sponsoredProject;
-    const totalCasesPrev = dataObj.casesPrev.techLicense + dataObj.casesPrev.materialTransfer + dataObj.casesPrev.sponsoredProject;
-    const diffCases = totalCasesCurr - totalCasesPrev;
-    const percentCases = ((Math.abs(diffCases) / totalCasesPrev) * 100).toFixed(1);
-
-    const casesBadgeEl = document.getElementById('cases-summary-badge');
-    if (diffCases >= 0) {
-        casesBadgeEl.className = 'summary-badge badge-up';
-        casesBadgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> 本期 ${totalCasesCurr} 件 (較去年 +${diffCases}件, +${percentCases}%)`;
-    } else {
-        casesBadgeEl.className = 'summary-badge badge-down';
-        casesBadgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-down"></i> 本期 ${totalCasesCurr} 件 (較去年 -${Math.abs(diffCases)}件, -${percentCases}%)`;
-    }
-
-    const totalAmtCurr = dataObj.amounts.techRevenueTotal + dataObj.amounts.sponsoredRealized;
-    const totalAmtPrev = dataObj.amountsPrev.techRevenueTotal + dataObj.amountsPrev.sponsoredRealized;
-    const diffAmt = totalAmtCurr - totalAmtPrev;
-    const percentAmt = ((Math.abs(diffAmt) / totalAmtPrev) * 100).toFixed(1);
-
-    const amtBadgeEl = document.getElementById('amounts-summary-badge');
-    if (diffAmt >= 0) {
-        amtBadgeEl.className = 'summary-badge badge-up';
-        amtBadgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> 本期實收 ${totalAmtCurr.toLocaleString()} 萬 (較去年 +${diffAmt.toLocaleString()}萬, +${percentAmt}%)`;
-    } else {
-        amtBadgeEl.className = 'summary-badge badge-down';
-        amtBadgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-down"></i> 本期實收 ${totalAmtCurr.toLocaleString()} 萬 (較去年 -${Math.abs(diffAmt).toLocaleString()}萬, -${percentAmt}%)`;
-    }
-}
-
+/* ✨ 繪製 YoY 圖表並於「本期柱體」頂部動態計算標示 +- 差異與 % 數 */
 function renderYoyCharts(dataObj) {
+    // 1. 件數同期對比圖表
     const ctxCases = document.getElementById('yoyCasesChart').getContext('2d');
     if (yoyCasesChartInstance) yoyCasesChartInstance.destroy();
 
@@ -563,8 +537,31 @@ function renderYoyCharts(dataObj) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: { padding: { top: 25 } },
             plugins: {
-                legend: { position: 'top' }
+                legend: { position: 'top' },
+                datalabels: {
+                    display: (context) => context.datasetIndex === 0, // 僅在本期柱體顯示
+                    anchor: 'end',
+                    align: 'top',
+                    font: { weight: 'bold', size: 11 },
+                    formatter: (value, context) => {
+                        const idx = context.dataIndex;
+                        const prevVal = casesPrevArray[idx];
+                        const diff = value - prevVal;
+                        const percent = prevVal > 0 ? ((Math.abs(diff) / prevVal) * 100).toFixed(1) : 0;
+                        
+                        if (diff === 0) return `${value}件 (持平)`;
+                        const sign = diff > 0 ? '+' : '-';
+                        const arrow = diff > 0 ? '↑' : '↓';
+                        return `${value}件 (${arrow}${sign}${Math.abs(diff)}件, ${sign}${percent}%)`;
+                    },
+                    color: (context) => {
+                        const idx = context.dataIndex;
+                        const diff = casesCurrArray[idx] - casesPrevArray[idx];
+                        return diff >= 0 ? '#059669' : '#DC2626'; // 成長為深綠、下滑為紅色
+                    }
+                }
             },
             scales: {
                 x: { grid: { display: false } },
@@ -573,6 +570,7 @@ function renderYoyCharts(dataObj) {
         }
     });
 
+    // 2. 金額同期對比圖表
     const ctxAmount = document.getElementById('yoyAmountChart').getContext('2d');
     if (yoyAmountChartInstance) yoyAmountChartInstance.destroy();
 
@@ -594,8 +592,31 @@ function renderYoyCharts(dataObj) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: { padding: { top: 25 } },
             plugins: {
-                legend: { position: 'top' }
+                legend: { position: 'top' },
+                datalabels: {
+                    display: (context) => context.datasetIndex === 0, // 僅在本期柱體顯示
+                    anchor: 'end',
+                    align: 'top',
+                    font: { weight: 'bold', size: 10 },
+                    formatter: (value, context) => {
+                        const idx = context.dataIndex;
+                        const prevVal = amtPrevArray[idx];
+                        const diff = value - prevVal;
+                        const percent = prevVal > 0 ? ((Math.abs(diff) / prevVal) * 100).toFixed(1) : 0;
+                        
+                        if (diff === 0) return `${value.toLocaleString()}萬 (持平)`;
+                        const sign = diff > 0 ? '+' : '-';
+                        const arrow = diff > 0 ? '↑' : '↓';
+                        return `${value.toLocaleString()}萬 (${arrow}${sign}${Math.abs(diff).toLocaleString()}萬, ${sign}${percent}%)`;
+                    },
+                    color: (context) => {
+                        const idx = context.dataIndex;
+                        const diff = amtCurrArray[idx] - amtPrevArray[idx];
+                        return diff >= 0 ? '#059669' : '#DC2626'; // 成長為深綠、下滑為紅色
+                    }
+                }
             },
             scales: {
                 x: { grid: { display: false } },
