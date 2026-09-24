@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智財技轉業務 - 處務會議數據分析儀表板</title>
+    <title>智財技轉業務 - 年度業務數據</title>
     <!-- Google Fonts & Font Awesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,8 +25,8 @@
             <div class="brand">
                 <div class="brand-icon"><i class="fa-solid fa-chart-line"></i></div>
                 <div>
-                    <h1 class="header-title">智財技轉業務數據展示板</h1>
-                    <p class="header-subtitle">處務會議簡報專用</p>
+                    <h1 class="header-title">智財技轉年度業務數據</h1>
+                    <p class="header-subtitle">處務會議用</p>
                 </div>
             </div>
             <button class="btn-edit-targets" onclick="openTargetModal()">
@@ -52,13 +52,13 @@
             <!-- ================================================================= -->
             <div class="tab-content active" id="tab-1">
                 
-                <!-- 年度資助研究計畫簽約金額及件數比較 -->
+                <!-- 資助計畫簽約件數及金額 -->
                 <section class="section-block">
                     <div class="block-header">
                         <h2 class="block-title">
-                            <span class="block-num">1</span> 年度資助研究計畫簽約金額及件數比較
+                            <span class="block-num">1</span> 資助計畫簽約件數及金額
                         </h2>
-                        <p class="block-desc">點選表中任一年份可展開每月金額及件數明細。</p>
+                        <p class="block-desc">點選表中任一年份可展開每月明細</p>
                     </div>
 
                     <div class="card-box">
@@ -71,7 +71,7 @@
                         <div class="card-box drawer-card">
                             <div class="drawer-header">
                                 <h3 class="drawer-title">
-                                    <i class="fa-solid fa-calendar-days"></i> <span id="drilldown-year-title">113 年度</span> 每月簽約金額及件數明細
+                                    <i class="fa-solid fa-calendar-days"></i> <span id="drilldown-year-title">113 年度</span> 每月簽約件數及金額明細
                                 </h3>
                                 <button class="btn-close-drawer" onclick="closeMonthlyDrawer()">
                                     <i class="fa-solid fa-xmark"></i> 收合
@@ -84,12 +84,12 @@
                     </div>
                 </section>
 
-                <!-- 授權及資助件數及金額同期比較 -->
+                <!-- 授權與資助件數及金額同期比較 -->
                 <section class="section-block">
                     <div class="block-header date-header-flex">
                         <div>
                             <h2 class="block-title">
-                                <span class="block-num">2</span> 授權及資助件數及金額同期比較
+                                <span class="block-num">2</span> 授權與資助件數及金額同期比較
                             </h2>
                             <p class="block-desc">本年度與上一年度同一日比較</p>
                         </div>
