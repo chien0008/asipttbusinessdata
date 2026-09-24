@@ -187,23 +187,28 @@ function renderAllDoughnuts() {
     renderSingleDoughnut('grantProjectDoughnut', 'grantProjectCenterText', 'grantProject', '#0284C7');
 }
 
-/* 5. 權利金（直條圖 Bar Chart） */
+/* 5. 權利金（折線圖 Line Chart） */
 function renderRoyaltyChart() {
     const ctx = document.getElementById('royaltyYearlyChart').getContext('2d');
-    const glassGradient = getTranslucentGradient(ctx, '#3B82F6', 0.8, 0.2);
+    const glassGradient = getTranslucentGradient(ctx, '#3B82F6', 0.3, 0.02);
 
     royaltyChartInstance = new Chart(ctx, {
-        type: 'bar',
+        type: 'line', // 👈 將這裡從 'bar' 改為 'line'
         data: {
             labels: royaltyData.map(item => item.year),
             datasets: [{
                 label: '權利金 (萬元)',
                 data: royaltyData.map(item => item.amount),
-                backgroundColor: glassGradient,
-                borderColor: 'rgba(59, 130, 246, 0.6)',
-                borderWidth: 1,
-                borderRadius: 8,
-                barPercentage: 0.55
+                borderColor: '#2563EB',             // 折線顏色
+                backgroundColor: glassGradient,       // 折線下方漸層填滿
+                fill: true,                           // 開啟漸層填滿
+                borderWidth: 3,                       // 線條粗細
+                pointBackgroundColor: '#2563EB',      // 節點顏色
+                pointBorderColor: '#FFFFFF',
+                pointBorderWidth: 2,
+                pointRadius: 6,                       // 節點大小
+                pointHoverRadius: 8,
+                tension: 0.35                         // 圓滑平滑曲線
             }]
         },
         options: {
