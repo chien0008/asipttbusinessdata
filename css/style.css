@@ -6,17 +6,17 @@
 
 :root {
     /* 1. 全局背景與卡片 */
-    --bg-main: #F5F7FA;             /* 極淺冷灰白背景 */
+    --bg-main: #F5F7FA;              /* 極淺冷灰白背景 */
     --surface-card: #FFFFFF;        /* 純白浮起卡片 */
     --surface-subtle: #F8FAFC;      /* 次級區塊底色 */
     --surface-hover: #F1F5F9;       /* 懸停底色 */
 
-    /* 2. 高雅文字層級 (避免純黑) */
+    /* 2. 高雅文字層級 */
     --text-primary: #24364B;        /* 深藍灰主標題 */
     --text-secondary: #64748B;      /* 中灰內文與說明 */
     --text-muted: #94A3B8;          /* 淺灰次要資訊 */
 
-    /* 3. Soft Pastel Accent Colors (低飽和質感馬卡龍點綴色) */
+    /* 3. Soft Pastel Accent Colors */
     --pastel-blue-bg: #E0F2FE;      --pastel-blue-text: #0284C7;
     --pastel-teal-bg: #CCFBF1;      --pastel-teal-text: #0F766E;
     --pastel-purple-bg: #F3E8FF;    --pastel-purple-text: #7E22CE;
@@ -30,7 +30,6 @@
     --radius-lg: 18px;
     --radius-xl: 24px;
 
-    /* 低對比度柔和陰影 */
     --shadow-soft-sm: 0 2px 8px rgba(36, 54, 75, 0.03);
     --shadow-soft-md: 0 10px 30px -4px rgba(36, 54, 75, 0.05);
     --shadow-soft-lg: 0 20px 40px -6px rgba(36, 54, 75, 0.08);
@@ -60,10 +59,7 @@ body {
     padding: 2rem 1.5rem;
 }
 
-/* ==========================================================================
-   Header & Brand Area
-   ========================================================================== */
-
+/* Header & Brand Area */
 .header {
     display: flex;
     justify-content: space-between;
@@ -124,10 +120,7 @@ body {
     background: var(--surface-subtle);
 }
 
-/* ==========================================================================
-   Pill Style Sticky Nav Tabs
-   ========================================================================== */
-
+/* Nav Tabs */
 .main-tab-nav {
     position: sticky;
     top: 1rem;
@@ -185,10 +178,7 @@ body {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* ==========================================================================
-   Dashboard Sections & Soft Cards
-   ========================================================================== */
-
+/* Dashboard Sections & Soft Cards */
 .section-block {
     margin-bottom: 2.5rem;
 }
@@ -241,10 +231,7 @@ body {
     width: 100%;
 }
 
-/* ==========================================================================
-   技術授權業務：四大 KPI 達成率 Soft Cards
-   ========================================================================== */
-
+/* 四大 KPI 達成率 Soft Cards */
 .kpi-doughnut-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
@@ -318,10 +305,7 @@ body {
     margin-top: 0.35rem;
 }
 
-/* ==========================================================================
-   YoY 同期年月日選擇與比對看板
-   ========================================================================== */
-
+/* YoY 同期年月日選擇與比對看板 */
 .date-picker-box {
     display: flex;
     flex-direction: column;
@@ -386,15 +370,6 @@ body {
     gap: 0.6rem;
 }
 
-.banner-tag {
-    font-size: 0.75rem;
-    background: var(--surface-subtle);
-    padding: 0.25rem 0.6rem;
-    border-radius: var(--radius-sm);
-    color: var(--text-secondary);
-    font-weight: 600;
-}
-
 .banner-date {
     font-size: 1.1rem;
     font-weight: 700;
@@ -441,19 +416,10 @@ body {
     color: var(--text-primary);
 }
 
-.summary-badge {
-    font-size: 0.8rem;
-    font-weight: 700;
-    padding: 0.3rem 0.75rem;
-    border-radius: 30px;
-}
-
-.badge-up { background-color: var(--pastel-green-bg); color: var(--pastel-green-text); }
-.badge-down { background-color: var(--pastel-rose-bg); color: var(--pastel-rose-text); }
-
+/* 確保 DataLabels 標籤在柱體上方有充足空間顯示 */
 .chart-container-lg {
     position: relative;
-    height: 280px;
+    height: 320px;
 }
 
 /* 折疊 Drawer */
@@ -499,10 +465,7 @@ body {
     cursor: pointer;
 }
 
-/* ==========================================================================
-   Modal 後台編輯視窗
-   ========================================================================== */
-
+/* Modal 後台編輯視窗 */
 .modal-overlay {
     position: fixed;
     top: 0;
