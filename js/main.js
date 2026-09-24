@@ -1,5 +1,5 @@
 /* ==============================================
-   1. 完整資料庫定義 (保持資料與欄位名稱)
+   1. 完整資料庫定義 (已更新圖片最新數據)
    ============================================== */
 
 let targetConfig = {
@@ -9,7 +9,7 @@ let targetConfig = {
     grantProject:  { target: 60, actual: 25, unit: "件" }
 };
 
-// 110-115 資助研究計畫數據 (包含真實數據 15337, 15246, 7615 等)
+// 1. 資助研究計畫數據 (含 15,337, 15,246, 7,615 等真實金額)
 const sponsoredData = [
     { year: "110年度", amount: 15337, cases: 63, monthlyCases: [5, 4, 6, 5, 7, 6, 5, 6, 5, 5, 5, 4], monthlyAmount: [1200, 1100, 1500, 1300, 1600, 1400, 1100, 1300, 1200, 1400, 1237, 1000] },
     { year: "111年度", amount: 15246, cases: 64, monthlyCases: [5, 5, 6, 5, 7, 6, 5, 6, 5, 5, 5, 4], monthlyAmount: [1246, 1100, 1400, 1300, 1500, 1400, 1200, 1300, 1100, 1300, 1200, 1200] },
@@ -19,13 +19,14 @@ const sponsoredData = [
     { year: "115年度", amount: 5452,  cases: 20, monthlyCases: [1, 1, 2, 2, 3, 2, 2, 2, 2, 1, 1, 1], monthlyAmount: [450, 350, 600, 500, 700, 550, 400, 550, 450, 450, 252, 150] }
 ];
 
+// 3. ✨ 科技移轉收入及產學合作實收經費 (依圖片更新完整數據)
 const revenueData = [
-    { year: "110年度", techTransfer: 1200, industryCoop: 2800 },
-    { year: "111年度", techTransfer: 1450, industryCoop: 3100 },
-    { year: "112年度", techTransfer: 1680, industryCoop: 3500 },
-    { year: "113年度", techTransfer: 1950, industryCoop: 4100 },
-    { year: "114年度", techTransfer: 2200, industryCoop: 4600 },
-    { year: "115年度", techTransfer: 2500, industryCoop: 5100 }
+    { year: "110年度", techTransfer: 12717, industryCoop: 15436 },
+    { year: "111年度", techTransfer: 6185,  industryCoop: 11196 },
+    { year: "112年度", techTransfer: 4653,  industryCoop: 14335 },
+    { year: "113年度", techTransfer: 4271,  industryCoop: 7187  },
+    { year: "114年度", techTransfer: 39358, industryCoop: 8206  },
+    { year: "115年度", techTransfer: 2708,  industryCoop: 4274  }
 ];
 
 const royaltyData = [
@@ -47,12 +48,12 @@ const techTransferBreakdownData = [
 ];
 
 const contractAndIncomeData = [
-    { year: "110年度", contractValue: 2400, incomeValue: 1550 },
-    { year: "111年度", contractValue: 2800, incomeValue: 1820 },
-    { year: "112年度", contractValue: 3100, incomeValue: 2100 },
-    { year: "113年度", contractValue: 3600, incomeValue: 2450 },
-    { year: "114年度", contractValue: 4100, incomeValue: 2800 },
-    { year: "115年度", contractValue: 4600, incomeValue: 3200 }
+    { year: "110年度", contractValue: 2400, incomeValue: 12717 },
+    { year: "111年度", contractValue: 2800, incomeValue: 6185  },
+    { year: "112年度", contractValue: 3100, incomeValue: 4653  },
+    { year: "113年度", contractValue: 3600, incomeValue: 4271  },
+    { year: "114年度", contractValue: 4100, incomeValue: 39358 },
+    { year: "115年度", contractValue: 4600, incomeValue: 2708  }
 ];
 
 const yoyHistoricalDatabase = {
@@ -61,16 +62,16 @@ const yoyHistoricalDatabase = {
         prevDateLabel: "114 年 09 月 24 日",
         cases: { techLicense: 48, materialTransfer: 52, sponsoredProject: 20 },
         casesPrev: { techLicense: 40, materialTransfer: 45, sponsoredProject: 30 },
-        amounts: { techRevenueTotal: 2150, royalty: 1350, contractValueTotal: 3400, techRevenueCashStock: 2250, sponsoredRealized: 5452 },
-        amountsPrev: { techRevenueTotal: 1800, royalty: 1100, contractValueTotal: 2900, techRevenueCashStock: 1900, sponsoredRealized: 5132 }
+        amounts: { techRevenueTotal: 2708, royalty: 1350, contractValueTotal: 3400, techRevenueCashStock: 2708, sponsoredRealized: 5452 },
+        amountsPrev: { techRevenueTotal: 39358, royalty: 1100, contractValueTotal: 2900, techRevenueCashStock: 39358, sponsoredRealized: 5132 }
     },
     "2026-09-19": {
         currDateLabel: "115 年 09 月 19 日",
         prevDateLabel: "114 年 09 月 18 日",
         cases: { techLicense: 45, materialTransfer: 50, sponsoredProject: 18 },
         casesPrev: { techLicense: 38, materialTransfer: 43, sponsoredProject: 28 },
-        amounts: { techRevenueTotal: 2080, royalty: 1300, contractValueTotal: 3250, techRevenueCashStock: 2150, sponsoredRealized: 5000 },
-        amountsPrev: { techRevenueTotal: 1720, royalty: 1050, contractValueTotal: 2800, techRevenueCashStock: 1820, sponsoredRealized: 4800 }
+        amounts: { techRevenueTotal: 2500, royalty: 1300, contractValueTotal: 3250, techRevenueCashStock: 2500, sponsoredRealized: 5000 },
+        amountsPrev: { techRevenueTotal: 38000, royalty: 1050, contractValueTotal: 2800, techRevenueCashStock: 38000, sponsoredRealized: 4800 }
     }
 };
 
@@ -88,9 +89,9 @@ let contractAndIncomeChartInstance = null;
 Chart.defaults.font.family = "'Plus Jakarta Sans', 'Noto Sans TC', sans-serif";
 Chart.defaults.color = '#64748B';
 
-/* 💎 工具函式：動態產生半透明玻璃質感漸層 */
+/* 💎 工具函式：產生透明質感漸層 */
 function getTranslucentGradient(ctx, colorTopHex, opacityTop, opacityBottom) {
-    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+    const gradient = ctx.createLinearGradient(0, 0, 0, 320);
     const rgb = hexToRgb(colorTopHex);
     gradient.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacityTop})`);
     gradient.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacityBottom})`);
@@ -133,7 +134,7 @@ function switchMainTab(tabId) {
 }
 
 /* ==============================================
-   3. 第二分頁圖表繪製 (透光質感 Doughnuts & Charts)
+   3. 第二分頁圖表繪製
    ============================================== */
 
 function renderSingleDoughnut(canvasId, textContainerId, itemKey, hexColor) {
@@ -152,7 +153,6 @@ function renderSingleDoughnut(canvasId, textContainerId, itemKey, hexColor) {
 
     if (doughnutInstances[canvasId]) doughnutInstances[canvasId].destroy();
 
-    // 建立環形透光漸層
     const gradient = ctx.createLinearGradient(0, 0, 160, 160);
     const rgb = hexToRgb(hexColor);
     gradient.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.9)`);
@@ -499,8 +499,8 @@ function handleYoyDateChange(selectedDateStr) {
             prevDateLabel: `${prevYearRoc} 年 ${month} 月 ${prevDayStr} 日`,
             cases: { techLicense: 46, materialTransfer: 51, sponsoredProject: 19 },
             casesPrev: { techLicense: 39, materialTransfer: 44, sponsoredProject: 29 },
-            amounts: { techRevenueTotal: 2100, royalty: 1320, contractValueTotal: 3300, techRevenueCashStock: 2200, sponsoredRealized: 5300 },
-            amountsPrev: { techRevenueTotal: 1750, royalty: 1080, contractValueTotal: 2850, techRevenueCashStock: 1860, sponsoredRealized: 5000 }
+            amounts: { techRevenueTotal: 2708, royalty: 1320, contractValueTotal: 3300, techRevenueCashStock: 2708, sponsoredRealized: 5300 },
+            amountsPrev: { techRevenueTotal: 39358, royalty: 1080, contractValueTotal: 2850, techRevenueCashStock: 39358, sponsoredRealized: 5000 }
         };
     }
 
