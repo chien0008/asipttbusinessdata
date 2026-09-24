@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智財技轉業務 - 110-115年成長與下滑趨勢分析儀表板</title>
+    <title>智財技轉業務 - 處務會議數據儀表板 (一眼明瞭 YoY 增減與%數)</title>
     <!-- Google Fonts & Font Awesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,68 +25,100 @@
             <div class="brand">
                 <div class="brand-icon"><i class="fa-solid fa-chart-line"></i></div>
                 <div>
-                    <h1 class="header-title">智財技轉業務數據分析與攀升/下滑幅度監控</h1>
-                    <p class="header-subtitle">110 年至 115 年資助計畫、科技移轉及產學合作實收成長率趨勢</p>
+                    <h1 class="header-title">智財技轉業務數據分析與同期 YoY 對比儀表板</h1>
+                    <p class="header-subtitle">110-115 年資助計畫、科技移轉及授權件數/金額即時同期比較</p>
                 </div>
             </div>
-            <div class="header-controls">
-                <label for="year-select"><i class="fa-regular fa-calendar"></i> 聚焦觀看年度：</label>
-                <select id="year-select" onchange="focusYearData(this.value)">
-                    <!-- 由 JS 動態生成選項 -->
-                </select>
+            <div class="header-tag">
+                <i class="fa-solid fa-building-columns"></i> 處務會議報告專用
             </div>
         </header>
 
         <!-- 主體內容 -->
         <main class="main-content">
 
-            <!-- 年度對比與攀升/下滑分析模條 -->
-            <section class="trend-section">
-                <div class="trend-header">
-                    <h2><i class="fa-solid fa-arrow-trend-up"></i> <span id="current-focused-year">113年度</span> 數據變動與前一年度攀升/下滑比較</h2>
-                    <span class="trend-subtitle">相較於前一年度之成長率 (%) 與實施增減數</span>
-                </div>
-                
-                <div class="trend-grid">
-                    <!-- 卡片 1：資助計畫金額變動 -->
-                    <div class="trend-card">
-                        <span class="trend-label">資助研究計畫簽約金額</span>
-                        <div class="trend-value" id="sponsored-amount-val">0 萬元</div>
-                        <div class="trend-badge" id="sponsored-amount-badge">--</div>
+            <!-- ================= 第三模組：授權及資助件數及金額同期比較 ================= -->
+            <section class="chart-section highlight-yoy-section">
+                <div class="chart-card yoy-card">
+                    
+                    <!-- 模組標題與日期選擇器 -->
+                    <div class="yoy-header-bar">
+                        <div>
+                            <h3 class="chart-title">
+                                <i class="fa-solid fa-calendar-check text-blue"></i> 三、授權及資助件數及金額同期比較（本年度與上一年度同一年月日比較）
+                            </h3>
+                            <p class="chart-desc">選擇任意基準日期，系統將自動比對前一年同期之件數與金額（預設為今天日期）</p>
+                        </div>
+
+                        <!-- 日期選擇器工具列 -->
+                        <div class="date-picker-box">
+                            <label for="yoy-date-input"><i class="fa-regular fa-calendar-days"></i> 請選擇基準年月日：</label>
+                            <input type="date" id="yoy-date-input" onchange="handleYoyDateChange(this.value)" />
+                            <div class="quick-date-buttons">
+                                <button class="btn-quick-date" onclick="setQuickDate('today')">今天</button>
+                                <button class="btn-quick-date" onclick="setQuickDate('115-09-19')">範例 (115.09.19)</button>
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- 卡片 2：資助計畫件數變動 -->
-                    <div class="trend-card">
-                        <span class="trend-label">資助研究計畫簽約件數</span>
-                        <div class="trend-value" id="sponsored-cases-val">0 件</div>
-                        <div class="trend-badge" id="sponsored-cases-badge">--</div>
+                    <!-- 對比日期提示 Banner -->
+                    <div class="yoy-comparison-banner">
+                        <div class="banner-item current">
+                            <span class="banner-label">【本期對比基準日】</span>
+                            <span class="banner-date" id="label-curr-date">115 年 09 月 24 日</span>
+                        </div>
+                        <div class="banner-vs"><i class="fa-solid fa-arrows-left-right"></i> VS</div>
+                        <div class="banner-item previous">
+                            <span class="banner-label">【前一年同期對比日】</span>
+                            <span class="banner-date" id="label-prev-date">114 年 09 月 24 日</span>
+                        </div>
                     </div>
 
-                    <!-- 卡片 3：科技移轉收入變動 -->
-                    <div class="trend-card">
-                        <span class="trend-label">科技移轉收入實收</span>
-                        <div class="trend-value" id="tech-revenue-val">0 萬元</div>
-                        <div class="trend-badge" id="tech-revenue-badge">--</div>
+                    <!-- 【件數】同期比較卡片群 (3 項 + 總計) -->
+                    <div class="yoy-sub-block">
+                        <h4 class="block-subtitle"><i class="fa-solid fa-file-signature"></i> 1. 業務件數同期比較 (單位：件)</h4>
+                        <div class="yoy-grid-4" id="yoy-cases-grid">
+                            <!-- 由 JS 動態生成技術授權件數、材料移轉件數、資助研究計畫件數卡片 -->
+                        </div>
                     </div>
 
-                    <!-- 卡片 4：產學＋技轉總金額變動 -->
-                    <div class="trend-card highlight">
-                        <span class="trend-label">總實收經費 (技轉＋產學)</span>
-                        <div class="trend-value" id="grand-total-val">0 萬元</div>
-                        <div class="trend-badge" id="grand-total-badge">--</div>
+                    <!-- 【金額】同期比較卡片群 (5 項) -->
+                    <div class="yoy-sub-block">
+                        <h4 class="block-subtitle"><i class="fa-solid fa-sack-dollar"></i> 2. 業務金額同期比較 (單位：萬元)</h4>
+                        <div class="yoy-grid-5" id="yoy-amount-grid">
+                            <!-- 由 JS 動態生成 5 大金額指標卡片 -->
+                        </div>
                     </div>
+
+                    <!-- 柱狀對比圖表 -->
+                    <div class="yoy-chart-wrapper">
+                        <div class="chart-box-half">
+                            <h5 class="sub-chart-title">件數同期對比圖 (件)</h5>
+                            <div class="chart-container-sm">
+                                <canvas id="yoyCasesChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="chart-box-half">
+                            <h5 class="sub-chart-title">金額同期對比圖 (萬元)</h5>
+                            <div class="chart-container-sm">
+                                <canvas id="yoyAmountChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </section>
 
-            <!-- 圖表模組一：資助研究計畫 110-115 攀升與月度鑽取 -->
+
+            <!-- ================= 第一模組：110-115 資助計畫與月度鑽取 ================= -->
             <section class="chart-section">
                 <div class="chart-card">
                     <div class="chart-header">
                         <div>
                             <h3 class="chart-title">
-                                <i class="fa-solid fa-chart-column text-teal"></i> 一、110-115 資助研究計畫簽約金額與件數攀升對比
+                                <i class="fa-solid fa-chart-column text-teal"></i> 一、110-115 每年度資助研究計畫簽約金額及件數比較
                             </h3>
-                            <p class="chart-desc">💡 將滑鼠移至圖表點上可直接查看相較於上年度之「攀升/下滑%」，點擊柱狀圖可開啟該年 1-12 月明細</p>
+                            <p class="chart-desc">💡 提示：點擊圖表中任一年份的柱體，即可在下方展開該年度 1~12 月逐月明細</p>
                         </div>
                     </div>
                     <div class="chart-container">
@@ -95,18 +127,18 @@
                 </div>
             </section>
 
-            <!-- 鑽取月度圖表 -->
-            <section class="chart-section" id="monthly-drilldown-section">
+            <!-- 折疊式 1-12 月月度明細 -->
+            <section class="chart-section collapsed-drawer" id="monthly-drawer">
                 <div class="chart-card border-accent">
                     <div class="chart-header">
                         <div>
                             <h3 class="chart-title">
                                 <i class="fa-solid fa-calendar-days text-blue"></i> <span id="drilldown-year-title">113 年度</span> 1~12 月逐月簽約件數與金額趨勢
                             </h3>
-                            <p class="chart-desc">一年內每個月的件數與金額起伏</p>
+                            <p class="chart-desc">一年內每個月的件數與金額分佈起伏</p>
                         </div>
-                        <button class="btn-reset" onclick="resetYearSelection()">
-                            <i class="fa-solid fa-rotate-left"></i> 重置回最新年度
+                        <button class="btn-close-drawer" onclick="closeMonthlyDrawer()">
+                            <i class="fa-solid fa-chevron-up"></i> 收起月度明細
                         </button>
                     </div>
                     <div class="chart-container">
@@ -115,15 +147,16 @@
                 </div>
             </section>
 
-            <!-- 圖表模組二：科技移轉與產學合作實收對比及總額攀升曲線 -->
+
+            <!-- ================= 第二模組：110-115 科技移轉及產學合作實收 ================= -->
             <section class="chart-section">
                 <div class="chart-card">
                     <div class="chart-header">
                         <div>
                             <h3 class="chart-title">
-                                <i class="fa-solid fa-chart-area text-amber"></i> 二、110-115 科技移轉收入及產學合作實收攀升/下滑幅度
+                                <i class="fa-solid fa-chart-area text-amber"></i> 二、110-115 科技移轉收入及產學合作實收對比與總金額
                             </h3>
-                            <p class="chart-desc">折線代表「每年總金額（科技移轉＋產學合作）」之攀升走勢</p>
+                            <p class="chart-desc">折線代表「每年總金額 (科技移轉＋產學合作)」之走勢</p>
                         </div>
                     </div>
                     <div class="chart-container">
