@@ -1,8 +1,7 @@
 /* ==============================================
-   1. 完整資料庫定義 (110 - 115 年度)
+   1. 完整資料庫定義 (保持資料完整與欄位名稱)
    ============================================== */
 
-// 第二分頁：四大達成率可編輯資料庫
 let targetConfig = {
     techLicense:   { target: 37, actual: 10, unit: "件" },
     techItem:      { target: 45, actual: 12, unit: "項" },
@@ -10,17 +9,16 @@ let targetConfig = {
     grantProject:  { target: 60, actual: 25, unit: "件" }
 };
 
-// 第一分頁：110-115 資助計畫
+// 包含圖片真實數據 (15337, 15246, 7615 等)
 const sponsoredData = [
-    { year: "110年度", amount: 3200, cases: 42, monthlyCases: [3, 2, 4, 3, 5, 4, 3, 4, 3, 4, 4, 3], monthlyAmount: [220, 180, 310, 240, 380, 290, 210, 320, 250, 300, 310, 190] },
-    { year: "111年度", amount: 3850, cases: 50, monthlyCases: [4, 3, 5, 4, 5, 4, 4, 5, 4, 4, 5, 3], monthlyAmount: [280, 210, 390, 310, 410, 320, 290, 380, 300, 330, 400, 230] },
-    { year: "112年度", amount: 4500, cases: 58, monthlyCases: [4, 4, 6, 5, 6, 5, 4, 6, 5, 5, 5, 3], monthlyAmount: [310, 290, 480, 390, 490, 410, 320, 450, 380, 390, 370, 220] },
-    { year: "113年度", amount: 5200, cases: 65, monthlyCases: [5, 4, 7, 6, 7, 6, 5, 6, 5, 6, 5, 3], monthlyAmount: [380, 310, 560, 480, 590, 490, 390, 510, 420, 460, 410, 200] },
-    { year: "114年度", amount: 5800, cases: 72, monthlyCases: [6, 5, 7, 6, 8, 6, 6, 7, 6, 7, 5, 3], monthlyAmount: [420, 360, 610, 520, 650, 540, 450, 580, 480, 510, 430, 250] },
-    { year: "115年度", amount: 6300, cases: 78, monthlyCases: [6, 6, 8, 7, 8, 7, 7, 8, 7, 6, 5, 3], monthlyAmount: [460, 410, 680, 590, 720, 610, 510, 640, 530, 480, 420, 250] }
+    { year: "110年度", amount: 15337, cases: 63, monthlyCases: [5, 4, 6, 5, 7, 6, 5, 6, 5, 5, 5, 4], monthlyAmount: [1200, 1100, 1500, 1300, 1600, 1400, 1100, 1300, 1200, 1400, 1237, 1000] },
+    { year: "111年度", amount: 15246, cases: 64, monthlyCases: [5, 5, 6, 5, 7, 6, 5, 6, 5, 5, 5, 4], monthlyAmount: [1246, 1100, 1400, 1300, 1500, 1400, 1200, 1300, 1100, 1300, 1200, 1200] },
+    { year: "112年度", amount: 7615,  cases: 41, monthlyCases: [3, 3, 4, 3, 5, 4, 3, 4, 3, 3, 3, 3], monthlyAmount: [600, 500, 800, 650, 900, 700, 550, 750, 600, 650, 515, 400] },
+    { year: "113年度", amount: 4047,  cases: 35, monthlyCases: [2, 2, 4, 3, 4, 3, 3, 3, 3, 3, 3, 2], monthlyAmount: [300, 250, 450, 350, 500, 400, 300, 400, 300, 350, 247, 200] },
+    { year: "114年度", amount: 5132,  cases: 30, monthlyCases: [2, 2, 3, 3, 4, 3, 2, 3, 2, 2, 2, 2], monthlyAmount: [400, 300, 550, 450, 600, 500, 350, 500, 400, 450, 382, 250] },
+    { year: "115年度", amount: 5452,  cases: 20, monthlyCases: [1, 1, 2, 2, 3, 2, 2, 2, 2, 1, 1, 1], monthlyAmount: [450, 350, 600, 500, 700, 550, 400, 550, 450, 450, 252, 150] }
 ];
 
-// 第一分頁：110-115 科技移轉及產學合作
 const revenueData = [
     { year: "110年度", techTransfer: 1200, industryCoop: 2800 },
     { year: "111年度", techTransfer: 1450, industryCoop: 3100 },
@@ -30,7 +28,6 @@ const revenueData = [
     { year: "115年度", techTransfer: 2500, industryCoop: 5100 }
 ];
 
-// 第二分頁：5. 權利金 (110 - 115)
 const royaltyData = [
     { year: "110年度", amount: 480 },
     { year: "111年度", amount: 620 },
@@ -40,17 +37,15 @@ const royaltyData = [
     { year: "115年度", amount: 1600 }
 ];
 
-// 第二分頁：6. 110-115 科技移轉件數明細
 const techTransferBreakdownData = [
     { year: "110年度", exclusive: 1, nonExclusive: 22, material: 85 },
     { year: "111年度", exclusive: 1, nonExclusive: 26, material: 92 },
     { year: "112年度", exclusive: 2, nonExclusive: 29, material: 101 },
     { year: "113年度", exclusive: 2, nonExclusive: 31, material: 105 },
-    { year: "114年度", exclusive: 2, nonExclusive: 34, material: 111 }, // 符合範例需求
+    { year: "114年度", exclusive: 2, nonExclusive: 34, material: 111 },
     { year: "115年度", exclusive: 3, nonExclusive: 38, material: 118 }
 ];
 
-// 第二分頁：7. 110-115 授權合約總價值及科技移轉總收入 (現金+股票)
 const contractAndIncomeData = [
     { year: "110年度", contractValue: 2400, incomeValue: 1550 },
     { year: "111年度", contractValue: 2800, incomeValue: 1820 },
@@ -60,27 +55,26 @@ const contractAndIncomeData = [
     { year: "115年度", contractValue: 4600, incomeValue: 3200 }
 ];
 
-// 第一分頁：2. YoY 比對資料庫
 const yoyHistoricalDatabase = {
     "2026-09-24": {
         currDateLabel: "115 年 09 月 24 日",
         prevDateLabel: "114 年 09 月 24 日",
-        cases: { techLicense: 48, materialTransfer: 52, sponsoredProject: 68 },
-        casesPrev: { techLicense: 40, materialTransfer: 45, sponsoredProject: 60 },
-        amounts: { techRevenueTotal: 2150, royalty: 1350, contractValueTotal: 3400, techRevenueCashStock: 2250, sponsoredRealized: 4800 },
-        amountsPrev: { techRevenueTotal: 1800, royalty: 1100, contractValueTotal: 2900, techRevenueCashStock: 1900, sponsoredRealized: 4200 }
+        cases: { techLicense: 48, materialTransfer: 52, sponsoredProject: 20 },
+        casesPrev: { techLicense: 40, materialTransfer: 45, sponsoredProject: 30 },
+        amounts: { techRevenueTotal: 2150, royalty: 1350, contractValueTotal: 3400, techRevenueCashStock: 2250, sponsoredRealized: 5452 },
+        amountsPrev: { techRevenueTotal: 1800, royalty: 1100, contractValueTotal: 2900, techRevenueCashStock: 1900, sponsoredRealized: 5132 }
     },
     "2026-09-19": {
         currDateLabel: "115 年 09 月 19 日",
         prevDateLabel: "114 年 09 月 18 日",
-        cases: { techLicense: 45, materialTransfer: 50, sponsoredProject: 65 },
-        casesPrev: { techLicense: 38, materialTransfer: 43, sponsoredProject: 58 },
-        amounts: { techRevenueTotal: 2080, royalty: 1300, contractValueTotal: 3250, techRevenueCashStock: 2150, sponsoredRealized: 4650 },
-        amountsPrev: { techRevenueTotal: 1720, royalty: 1050, contractValueTotal: 2800, techRevenueCashStock: 1820, sponsoredRealized: 4050 }
+        cases: { techLicense: 45, materialTransfer: 50, sponsoredProject: 18 },
+        casesPrev: { techLicense: 38, materialTransfer: 43, sponsoredProject: 28 },
+        amounts: { techRevenueTotal: 2080, royalty: 1300, contractValueTotal: 3250, techRevenueCashStock: 2150, sponsoredRealized: 5000 },
+        amountsPrev: { techRevenueTotal: 1720, royalty: 1050, contractValueTotal: 2800, techRevenueCashStock: 1820, sponsoredRealized: 4800 }
     }
 };
 
-// Chart Instances 暫存
+// Chart Instances
 let doughnutInstances = {};
 let royaltyChartInstance = null;
 let sponsoredYearlyChartInstance = null;
@@ -91,17 +85,19 @@ let yoyAmountChartInstance = null;
 let techTransferBreakdownChartInstance = null;
 let contractAndIncomeChartInstance = null;
 
+/* 全局圖表顏色與字體設定 (Soft Tone) */
+Chart.defaults.font.family = "'Plus Jakarta Sans', 'Noto Sans TC', sans-serif";
+Chart.defaults.color = '#64748B';
+
 /* ==============================================
-   2. 初始化與主 Tab 切換邏輯
+   2. 初始化與 Tab 切換邏輯
    ============================================== */
 window.addEventListener('DOMContentLoaded', () => {
-    // 渲染第一分頁圖表
     renderSponsoredYearlyChart();
     renderRevenueYearlyChart();
     document.getElementById('yoy-date-input').value = "2026-09-24";
     handleYoyDateChange("2026-09-24");
 
-    // 預先繪製第二分頁圖表 (隱藏狀態)
     renderAllDoughnuts();
     renderRoyaltyChart();
     renderTechTransferBreakdownChart();
@@ -122,17 +118,10 @@ function switchMainTab(tabId) {
 }
 
 /* ==============================================
-   3. 第二分頁圖表繪製邏輯 (達成率 + 件數 + 總價值)
+   3. 第二分頁圖表繪製邏輯
    ============================================== */
 
-function createGradient(ctx, color1, color2) {
-    const gradient = ctx.createLinearGradient(0, 0, 170, 170);
-    gradient.addColorStop(0, color1);
-    gradient.addColorStop(1, color2);
-    return gradient;
-}
-
-function renderSingleDoughnut(canvasId, textContainerId, itemKey, colorStart, colorEnd) {
+function renderSingleDoughnut(canvasId, textContainerId, itemKey, solidColor) {
     const canvas = document.getElementById(canvasId);
     const ctx = canvas.getContext('2d');
     const cfg = targetConfig[itemKey];
@@ -148,21 +137,19 @@ function renderSingleDoughnut(canvasId, textContainerId, itemKey, colorStart, co
 
     if (doughnutInstances[canvasId]) doughnutInstances[canvasId].destroy();
 
-    const gradient = createGradient(ctx, colorStart, colorEnd);
-
     doughnutInstances[canvasId] = new Chart(ctx, {
         type: 'doughnut',
         data: {
             labels: ['已達成', '未達成'],
             datasets: [{
                 data: [actual, remain],
-                backgroundColor: [gradient, '#f1f5f9'],
+                backgroundColor: [solidColor, '#EEF2F6'],
                 borderWidth: 0,
                 hoverOffset: 4
             }]
         },
         options: {
-            cutout: '76%',
+            cutout: '78%',
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
@@ -176,13 +163,12 @@ function renderSingleDoughnut(canvasId, textContainerId, itemKey, colorStart, co
 }
 
 function renderAllDoughnuts() {
-    renderSingleDoughnut('techLicenseDoughnut',  'techLicenseCenterText',  'techLicense',  '#0d6e63', '#2dd4bf');
-    renderSingleDoughnut('techItemDoughnut',     'techItemCenterText',     'techItem',     '#0284c7', '#38bdf8');
-    renderSingleDoughnut('adDoughnut',           'adCenterText',           'ad',           '#7e22ce', '#c084fc');
-    renderSingleDoughnut('grantProjectDoughnut', 'grantProjectCenterText', 'grantProject', '#d97706', '#fbbf24');
+    renderSingleDoughnut('techLicenseDoughnut',  'techLicenseCenterText',  'techLicense',  '#0284C7');
+    renderSingleDoughnut('techItemDoughnut',     'techItemCenterText',     'techItem',     '#0F766E');
+    renderSingleDoughnut('adDoughnut',           'adCenterText',           'ad',           '#7E22CE');
+    renderSingleDoughnut('grantProjectDoughnut', 'grantProjectCenterText', 'grantProject', '#D97706');
 }
 
-// 5. 權利金
 function renderRoyaltyChart() {
     const ctx = document.getElementById('royaltyYearlyChart').getContext('2d');
     royaltyChartInstance = new Chart(ctx, {
@@ -192,19 +178,21 @@ function renderRoyaltyChart() {
             datasets: [{
                 label: '權利金 (萬元)',
                 data: royaltyData.map(item => item.amount),
-                backgroundColor: 'rgba(217, 119, 6, 0.85)',
-                borderRadius: 6
+                backgroundColor: '#3B82F6',
+                borderRadius: 8
             }]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            scales: { y: { beginAtZero: true, title: { display: true, text: '金額 (萬元)' } } }
+            scales: {
+                x: { grid: { display: false } },
+                y: { beginAtZero: true, grid: { color: '#F1F5F9' }, title: { display: true, text: '金額 (萬元)' } }
+            }
         }
     });
 }
 
-// 6. 110-115 每年度科技移轉件數 (專屬授權 + 非專屬授權 + 有償材料移轉)
 function renderTechTransferBreakdownChart() {
     const ctx = document.getElementById('techTransferBreakdownChart').getContext('2d');
     techTransferBreakdownChartInstance = new Chart(ctx, {
@@ -212,23 +200,22 @@ function renderTechTransferBreakdownChart() {
         data: {
             labels: techTransferBreakdownData.map(item => item.year),
             datasets: [
-                { label: '專屬授權', data: techTransferBreakdownData.map(item => item.exclusive), backgroundColor: '#0d6e63', borderRadius: 4 },
-                { label: '非專屬授權', data: techTransferBreakdownData.map(item => item.nonExclusive), backgroundColor: '#0284c7', borderRadius: 4 },
-                { label: '有償材料移轉', data: techTransferBreakdownData.map(item => item.material), backgroundColor: '#d97706', borderRadius: 4 }
+                { label: '專屬授權', data: techTransferBreakdownData.map(item => item.exclusive), backgroundColor: '#38BDF8', borderRadius: 4 },
+                { label: '非專屬授權', data: techTransferBreakdownData.map(item => item.nonExclusive), backgroundColor: '#31C48D', borderRadius: 4 },
+                { label: '有償材料移轉', data: techTransferBreakdownData.map(item => item.material), backgroundColor: '#F59E0B', borderRadius: 4 }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                x: { stacked: true },
-                y: { stacked: true, beginAtZero: true, title: { display: true, text: '件數 (件)' } }
+                x: { stacked: true, grid: { display: false } },
+                y: { stacked: true, beginAtZero: true, grid: { color: '#F1F5F9' }, title: { display: true, text: '件數 (件)' } }
             }
         }
     });
 }
 
-// 7. 110-115 授權合約總價值及科技移轉總收入 (現金＋股票)
 function renderContractAndIncomeChart() {
     const ctx = document.getElementById('contractAndIncomeChart').getContext('2d');
     contractAndIncomeChartInstance = new Chart(ctx, {
@@ -236,19 +223,22 @@ function renderContractAndIncomeChart() {
         data: {
             labels: contractAndIncomeData.map(item => item.year),
             datasets: [
-                { type: 'bar', label: '授權合約總價值 (現金＋股票)', data: contractAndIncomeData.map(item => item.contractValue), backgroundColor: 'rgba(2, 132, 199, 0.85)', borderRadius: 6 },
-                { type: 'bar', label: '科技移轉總收入 (現金＋股票)', data: contractAndIncomeData.map(item => item.incomeValue), backgroundColor: 'rgba(13, 110, 99, 0.85)', borderRadius: 6 }
+                { type: 'bar', label: '授權合約總價值 (現金＋股票)', data: contractAndIncomeData.map(item => item.contractValue), backgroundColor: '#6366F1', borderRadius: 6 },
+                { type: 'bar', label: '科技移轉總收入 (現金＋股票)', data: contractAndIncomeData.map(item => item.incomeValue), backgroundColor: '#38BDF8', borderRadius: 6 }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            scales: { y: { beginAtZero: true, title: { display: true, text: '金額 (萬元)' } } }
+            scales: {
+                x: { grid: { display: false } },
+                y: { beginAtZero: true, grid: { color: '#F1F5F9' }, title: { display: true, text: '金額 (萬元)' } }
+            }
         }
     });
 }
 
-/* Modal 表單編輯邏輯 */
+/* Modal 表單邏輯 */
 function openTargetModal() {
     document.getElementById('input-tech-target').value  = targetConfig.techLicense.target;
     document.getElementById('input-tech-actual').value  = targetConfig.techLicense.actual;
@@ -292,9 +282,7 @@ function handleTargetSubmit(e) {
     closeTargetModal();
 }
 
-/* ==============================================
-   4. 第一分頁圖表邏輯 (同前)
-   ============================================== */
+/* 第一分頁圖表 */
 function renderSponsoredYearlyChart() {
     const ctx = document.getElementById('sponsoredYearlyChart').getContext('2d');
     sponsoredYearlyChartInstance = new Chart(ctx, {
@@ -302,8 +290,8 @@ function renderSponsoredYearlyChart() {
         data: {
             labels: sponsoredData.map(item => item.year),
             datasets: [
-                { type: 'bar', label: '簽約金額 (萬元)', data: sponsoredData.map(item => item.amount), backgroundColor: 'rgba(13, 110, 99, 0.85)', borderRadius: 6, yAxisID: 'yAmount' },
-                { type: 'line', label: '簽約件數 (件)', data: sponsoredData.map(item => item.cases), borderColor: '#0284c7', borderWidth: 2.5, pointRadius: 5, yAxisID: 'yCases' }
+                { type: 'bar', label: '簽約金額 (萬元)', data: sponsoredData.map(item => item.amount), backgroundColor: '#3B82F6', borderRadius: 8, yAxisID: 'yAmount' },
+                { type: 'line', label: '簽約件數 (件)', data: sponsoredData.map(item => item.cases), borderColor: '#10B981', borderWidth: 3, pointBackgroundColor: '#10B981', pointRadius: 5, yAxisID: 'yCases' }
             ]
         },
         options: {
@@ -313,7 +301,8 @@ function renderSponsoredYearlyChart() {
                 if (elements.length > 0) openMonthlyDrawer(elements[0].index);
             },
             scales: {
-                yAmount: { type: 'linear', position: 'left', beginAtZero: true, title: { display: true, text: '金額 (萬元)' } },
+                x: { grid: { display: false } },
+                yAmount: { type: 'linear', position: 'left', beginAtZero: true, grid: { color: '#F1F5F9' }, title: { display: true, text: '金額 (萬元)' } },
                 yCases: { type: 'linear', position: 'right', beginAtZero: true, grid: { drawOnChartArea: false }, title: { display: true, text: '件數 (件)' } }
             }
         }
@@ -343,15 +332,16 @@ function updateSponsoredMonthlyChart(yearIndex) {
         data: {
             labels: ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"],
             datasets: [
-                { type: 'bar', label: '每月金額 (萬元)', data: yearObj.monthlyAmount, backgroundColor: 'rgba(2, 132, 199, 0.75)', borderRadius: 5, yAxisID: 'yMonthAmount' },
-                { type: 'line', label: '每月件數 (件)', data: yearObj.monthlyCases, borderColor: '#0d6e63', borderWidth: 2, pointRadius: 4, yAxisID: 'yMonthCases' }
+                { type: 'bar', label: '每月金額 (萬元)', data: yearObj.monthlyAmount, backgroundColor: '#60A5FA', borderRadius: 6, yAxisID: 'yMonthAmount' },
+                { type: 'line', label: '每月件數 (件)', data: yearObj.monthlyCases, borderColor: '#059669', borderWidth: 2.5, pointRadius: 4, yAxisID: 'yMonthCases' }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                yMonthAmount: { type: 'linear', position: 'left', beginAtZero: true },
+                x: { grid: { display: false } },
+                yMonthAmount: { type: 'linear', position: 'left', beginAtZero: true, grid: { color: '#F1F5F9' } },
                 yMonthCases: { type: 'linear', position: 'right', beginAtZero: true, grid: { drawOnChartArea: false } }
             }
         }
@@ -365,15 +355,18 @@ function renderRevenueYearlyChart() {
         data: {
             labels: revenueData.map(item => item.year),
             datasets: [
-                { type: 'bar', label: '科技移轉收入 (萬元)', data: revenueData.map(item => item.techTransfer), backgroundColor: 'rgba(13, 110, 99, 0.85)', borderRadius: 5 },
-                { type: 'bar', label: '產學合作實收經費 (萬元)', data: revenueData.map(item => item.industryCoop), backgroundColor: 'rgba(2, 132, 199, 0.85)', borderRadius: 5 },
-                { type: 'line', label: '總金額 (科技移轉＋產學合作)', data: revenueData.map(item => item.techTransfer + item.industryCoop), borderColor: '#d97706', borderWidth: 2.5, pointRadius: 5, tension: 0.3 }
+                { type: 'bar', label: '科技移轉收入 (萬元)', data: revenueData.map(item => item.techTransfer), backgroundColor: '#38BDF8', borderRadius: 6 },
+                { type: 'bar', label: '產學合作實收經費 (萬元)', data: revenueData.map(item => item.industryCoop), backgroundColor: '#818CF8', borderRadius: 6 },
+                { type: 'line', label: '總金額 (科技移轉＋產學合作)', data: revenueData.map(item => item.techTransfer + item.industryCoop), borderColor: '#F59E0B', borderWidth: 3, pointRadius: 5, tension: 0.3 }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            scales: { y: { beginAtZero: true, title: { display: true, text: '金額 (萬元)' } } }
+            scales: {
+                x: { grid: { display: false } },
+                y: { beginAtZero: true, grid: { color: '#F1F5F9' }, title: { display: true, text: '金額 (萬元)' } }
+            }
         }
     });
 }
@@ -383,9 +376,6 @@ function setQuickDate(type) {
     if (type === 'today') {
         dateInput.value = "2026-09-24";
         handleYoyDateChange("2026-09-24");
-    } else if (type === '115-09-19') {
-        dateInput.value = "2026-09-19";
-        handleYoyDateChange("2026-09-19");
     }
 }
 
@@ -400,15 +390,14 @@ function handleYoyDateChange(selectedDateStr) {
 
         const prevYearRoc = currYearRoc - 1;
         let prevDayStr = day;
-        if(selectedDateStr === "2026-09-19") prevDayStr = "18";
 
         dataObj = {
             currDateLabel: `${currYearRoc} 年 ${month} 月 ${day} 日`,
             prevDateLabel: `${prevYearRoc} 年 ${month} 月 ${prevDayStr} 日`,
-            cases: { techLicense: 46, materialTransfer: 51, sponsoredProject: 66 },
-            casesPrev: { techLicense: 39, materialTransfer: 44, sponsoredProject: 59 },
-            amounts: { techRevenueTotal: 2100, royalty: 1320, contractValueTotal: 3300, techRevenueCashStock: 2200, sponsoredRealized: 4700 },
-            amountsPrev: { techRevenueTotal: 1750, royalty: 1080, contractValueTotal: 2850, techRevenueCashStock: 1860, sponsoredRealized: 4100 }
+            cases: { techLicense: 46, materialTransfer: 51, sponsoredProject: 19 },
+            casesPrev: { techLicense: 39, materialTransfer: 44, sponsoredProject: 29 },
+            amounts: { techRevenueTotal: 2100, royalty: 1320, contractValueTotal: 3300, techRevenueCashStock: 2200, sponsoredRealized: 5300 },
+            amountsPrev: { techRevenueTotal: 1750, royalty: 1080, contractValueTotal: 2850, techRevenueCashStock: 1860, sponsoredRealized: 5000 }
         };
     }
 
@@ -461,30 +450,20 @@ function renderYoyCharts(dataObj) {
         data: {
             labels: ['技術授權件數', '材料移轉件數', '資助研究計畫件數'],
             datasets: [
-                { label: '本期件數', data: casesCurrArray, backgroundColor: '#0d6e63', borderRadius: 4 },
-                { label: '去年同期件數', data: casesPrevArray, backgroundColor: '#cbd5e1', borderRadius: 4 }
+                { label: '本期件數', data: casesCurrArray, backgroundColor: '#3B82F6', borderRadius: 6 },
+                { label: '去年同期件數', data: casesPrevArray, backgroundColor: '#E2E8F0', borderRadius: 6 }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'top' },
-                tooltip: {
-                    callbacks: {
-                        afterBody: (tooltipItems) => {
-                            const index = tooltipItems[0].dataIndex;
-                            const curr = casesCurrArray[index];
-                            const prev = casesPrevArray[index];
-                            const diff = curr - prev;
-                            const percent = ((Math.abs(diff) / prev) * 100).toFixed(1);
-                            const sign = diff >= 0 ? '+' : '-';
-                            return `\n-------------------\n較去年同期: ${diff >= 0 ? '↑ 攀升' : '↓ 下滑'} ${sign}${Math.abs(diff)} 件 (${sign}${percent}%)`;
-                        }
-                    }
-                }
+                legend: { position: 'top' }
             },
-            scales: { y: { beginAtZero: true, title: { display: true, text: '件數 (件)' } } }
+            scales: {
+                x: { grid: { display: false } },
+                y: { beginAtZero: true, grid: { color: '#F1F5F9' }, title: { display: true, text: '件數 (件)' } }
+            }
         }
     });
 
@@ -499,30 +478,20 @@ function renderYoyCharts(dataObj) {
         data: {
             labels: ['科技移轉總收入', '權利金', '合約總價值(現+股)', '科移收入(現+股)', '資助計畫實收'],
             datasets: [
-                { label: '本期金額 (萬元)', data: amtCurrArray, backgroundColor: '#0284c7', borderRadius: 4 },
-                { label: '去年同期金額 (萬元)', data: amtPrevArray, backgroundColor: '#94a3b8', borderRadius: 4 }
+                { label: '本期金額 (萬元)', data: amtCurrArray, backgroundColor: '#10B981', borderRadius: 6 },
+                { label: '去年同期金額 (萬元)', data: amtPrevArray, backgroundColor: '#CBD5E1', borderRadius: 6 }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: {
-                legend: { position: 'top' },
-                tooltip: {
-                    callbacks: {
-                        afterBody: (tooltipItems) => {
-                            const index = tooltipItems[0].dataIndex;
-                            const curr = amtCurrArray[index];
-                            const prev = amtPrevArray[index];
-                            const diff = curr - prev;
-                            const percent = ((Math.abs(diff) / prev) * 100).toFixed(1);
-                            const sign = diff >= 0 ? '+' : '-';
-                            return `\n-------------------\n較去年同期: ${diff >= 0 ? '↑ 攀升' : '↓ 下滑'} ${sign}${Math.abs(diff).toLocaleString()} 萬元 (${sign}${percent}%)`;
-                        }
-                    }
-                }
+                legend: { position: 'top' }
             },
-            scales: { y: { beginAtZero: true, title: { display: true, text: '金額 (萬元)' } } }
+            scales: {
+                x: { grid: { display: false } },
+                y: { beginAtZero: true, grid: { color: '#F1F5F9' }, title: { display: true, text: '金額 (萬元)' } }
+            }
         }
     });
 }
