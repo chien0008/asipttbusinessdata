@@ -3,11 +3,11 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Plus Jakarta Sans', 'Noto Sans TC', sans-serif;
+    font-family: 'Plus Jakarta Sans', 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
 :root {
-    --bg-main: #f8fafc;
+    --bg-main: #f1f5f9;
     --card-bg: #ffffff;
     --primary-teal: #0d6e63;
     --primary-dark: #0f172a;
@@ -15,12 +15,12 @@
     --accent-amber: #d97706;
     --text-dark: #1e293b;
     --text-muted: #64748b;
-    --border-color: #e2e8f0;
-    
-    --trend-up-bg: #ecfdf5;
-    --trend-up-text: #047857;
-    --trend-down-bg: #fef2f2;
-    --trend-down-text: #b91c1c;
+    --border-color: #cbd5e1;
+
+    --up-green-bg: #dcfce7;
+    --up-green-text: #15803d;
+    --down-red-bg: #fee2e2;
+    --down-red-text: #b91c1c;
 }
 
 body {
@@ -37,15 +37,12 @@ body {
 
 /* Header */
 .header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     background: var(--card-bg);
-    padding: 1.25rem 2rem;
-    border-radius: 16px;
     border: 1px solid var(--border-color);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.02);
-    margin-bottom: 1.5rem;
+    border-radius: 16px;
+    padding: 1.25rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
 }
 
 .brand {
@@ -55,19 +52,19 @@ body {
 }
 
 .brand-icon {
-    width: 44px;
-    height: 44px;
+    width: 46px;
+    height: 46px;
     background: #e6f4f1;
     color: var(--primary-teal);
     border-radius: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.35rem;
+    font-size: 1.4rem;
 }
 
 .header-title {
-    font-size: 1.2rem;
+    font-size: 1.35rem;
     font-weight: 800;
     color: var(--primary-dark);
 }
@@ -77,75 +74,112 @@ body {
     color: var(--text-muted);
 }
 
-.header-tag {
-    background: #f1f5f9;
-    color: var(--primary-teal);
-    padding: 0.5rem 1rem;
-    border-radius: 8px;
-    font-size: 0.85rem;
-    font-weight: 700;
+/* 業務大區塊 (一、二、三) */
+.section-block {
+    margin-bottom: 2.5rem;
 }
 
-/* 圖表通用卡片 */
-.chart-section {
-    margin-bottom: 1.5rem;
+.block-header {
+    margin-bottom: 1rem;
 }
 
-.chart-card {
-    background: var(--card-bg);
-    border: 1px solid var(--border-color);
-    border-radius: 20px;
-    padding: 1.75rem;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-}
-
-.chart-card.border-accent {
-    border: 1.5px solid #0284c7;
-    background: #f8fafc;
-}
-
-.chart-header {
+.date-header-flex {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 1.25rem;
+    align-items: flex-end;
 }
 
-.chart-title {
-    font-size: 1.1rem;
+.block-title {
+    font-size: 1.25rem;
     font-weight: 800;
     color: var(--primary-dark);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
-    margin-bottom: 0.25rem;
+    gap: 0.6rem;
+    margin-bottom: 0.3rem;
 }
 
-.chart-desc {
-    font-size: 0.85rem;
-    color: var(--primary-teal);
-    font-weight: 600;
+.block-num {
+    background: var(--primary-teal);
+    color: white;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: 800;
 }
 
-/* ✨ 第三模組 (YoY 同期比較特化樣式) */
-.highlight-yoy-section {
-    border-radius: 20px;
+.block-desc {
+    font-size: 0.875rem;
+    color: var(--text-muted);
+    font-weight: 500;
 }
 
-.yoy-card {
-    border: 1.5px solid #0d6e63;
-    background: linear-gradient(180deg, #ffffff 0%, #f8fafc 100%);
+.card-box {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 16px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
 }
 
-.yoy-header-bar {
+.chart-container {
+    position: relative;
+    height: 320px;
+    width: 100%;
+}
+
+/* 抽屜/手風琴折疊 */
+.collapsed-drawer {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    margin-top: 0;
+    transition: all 0.4s ease;
+}
+
+.collapsed-drawer.open {
+    max-height: 480px;
+    opacity: 1;
+    margin-top: 1rem;
+}
+
+.drawer-card {
+    border: 1.5px solid var(--accent-blue);
+    background: #f0f9ff;
+}
+
+.drawer-header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-start;
-    padding-bottom: 1.25rem;
-    border-bottom: 1px solid var(--border-color);
-    margin-bottom: 1.25rem;
+    align-items: center;
+    margin-bottom: 1rem;
 }
 
+.drawer-title {
+    font-size: 1rem;
+    font-weight: 800;
+    color: var(--accent-blue);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.btn-close-drawer {
+    background: #bae6fd;
+    border: none;
+    color: #0369a1;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* 第三項：同期對比日期組件 */
 .date-picker-box {
     display: flex;
     flex-direction: column;
@@ -159,31 +193,30 @@ body {
     color: var(--primary-dark);
 }
 
-.date-picker-box input {
-    padding: 0.4rem 0.8rem;
+.date-input-group {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.date-input-group input {
+    padding: 0.4rem 0.7rem;
     border: 1.5px solid var(--primary-teal);
     border-radius: 8px;
     font-size: 0.9rem;
     font-weight: 700;
-    color: var(--primary-dark);
     outline: none;
-    background: #f0fdfa;
-}
-
-.quick-date-buttons {
-    display: flex;
-    gap: 0.4rem;
+    background: #ffffff;
 }
 
 .btn-quick-date {
     background: #e2e8f0;
     border: none;
-    padding: 0.2rem 0.6rem;
+    padding: 0.4rem 0.7rem;
     border-radius: 6px;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
     font-weight: 700;
     cursor: pointer;
-    color: var(--text-dark);
 }
 
 .btn-quick-date:hover {
@@ -191,28 +224,30 @@ body {
     color: white;
 }
 
-/* 對比日期 Banner */
-.yoy-comparison-banner {
+.date-compare-banner {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 2rem;
-    background: #f0fdfa;
-    border: 1px solid #99f6e4;
+    background: #ffffff;
+    border: 1px solid var(--border-color);
     border-radius: 12px;
     padding: 0.85rem 1.5rem;
-    margin-bottom: 1.5rem;
+    margin-bottom: 1.25rem;
 }
 
-.banner-item {
+.banner-date-box {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 0.6rem;
 }
 
-.banner-label {
-    font-size: 0.85rem;
+.banner-tag {
+    font-size: 0.75rem;
     font-weight: 700;
+    background: #f1f5f9;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
     color: var(--text-muted);
 }
 
@@ -223,7 +258,7 @@ body {
 }
 
 .banner-vs {
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     font-weight: 800;
     color: var(--accent-amber);
     background: #fef3c7;
@@ -231,46 +266,44 @@ body {
     border-radius: 20px;
 }
 
-.yoy-sub-block {
-    margin-bottom: 1.75rem;
+.yoy-sub-group {
+    margin-bottom: 1.5rem;
 }
 
-.block-subtitle {
-    font-size: 1rem;
+.yoy-group-title {
+    font-size: 0.95rem;
     font-weight: 800;
     color: var(--primary-dark);
-    margin-bottom: 0.85rem;
+    margin-bottom: 0.75rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
 
-/* 網格排列 (件數 4欄、金額 5欄) */
-.yoy-grid-4 {
+/* 件數 4 欄、金額 5 欄高對比卡片 */
+.yoy-cards-grid-4 {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: 1rem;
 }
 
-.yoy-grid-5 {
+.yoy-cards-grid-5 {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
     gap: 1rem;
 }
 
-/* ✨ 一眼掌握的 YoY 視覺卡片結構 */
 .yoy-card-item {
     background: #ffffff;
     border: 1px solid var(--border-color);
-    border-radius: 14px;
+    border-radius: 12px;
     padding: 1.1rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
 }
 
-.yoy-card-item.total-item {
+.yoy-card-item.total-card {
     background: #f0f9ff;
     border-color: #7dd3fc;
 }
@@ -279,81 +312,58 @@ body {
     font-size: 0.85rem;
     font-weight: 700;
     color: var(--text-muted);
-    margin-bottom: 0.6rem;
+    margin-bottom: 0.5rem;
     line-height: 1.35;
     min-height: 2.3rem;
 }
 
-/* 本期數值放大 */
 .item-curr-val {
-    font-size: 1.5rem;
+    font-size: 1.45rem;
     font-weight: 800;
     color: var(--primary-dark);
-    margin-bottom: 0.3rem;
+    margin-bottom: 0.4rem;
 }
 
 .item-curr-val small {
     font-size: 0.8rem;
     color: var(--text-muted);
-    font-weight: 600;
 }
 
-/* 增減差額與 % 數突出標籤 */
 .item-diff-badge {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0.35rem 0.65rem;
-    border-radius: 8px;
+    padding: 0.35rem 0.6rem;
+    border-radius: 6px;
     font-size: 0.8rem;
     font-weight: 800;
     margin-bottom: 0.5rem;
 }
 
-.badge-up {
-    background-color: var(--trend-up-bg);
-    color: var(--trend-up-text);
-}
-
-.badge-down {
-    background-color: var(--trend-down-bg);
-    color: var(--trend-down-text);
-}
-
-.badge-flat {
-    background-color: #f1f5f9;
-    color: var(--text-muted);
-}
+.badge-up { background-color: var(--up-green-bg); color: var(--up-green-text); }
+.badge-down { background-color: var(--down-red-bg); color: var(--down-red-text); }
+.badge-flat { background-color: #f1f5f9; color: var(--text-muted); }
 
 .item-prev-val {
-    font-size: 0.78rem;
+    font-size: 0.75rem;
     color: var(--text-muted);
     font-weight: 600;
     border-top: 1px dashed var(--border-color);
     padding-top: 0.4rem;
 }
 
-/* YoY 雙對比圖 */
-.yoy-chart-wrapper {
+.yoy-charts-two-col {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
-    margin-top: 1rem;
-}
-
-.chart-box-half {
-    background: #ffffff;
-    border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1rem;
 }
 
 .sub-chart-title {
-    font-size: 0.9rem;
+    font-size: 0.875rem;
     font-weight: 800;
     color: var(--primary-dark);
-    margin-bottom: 0.75rem;
     text-align: center;
+    margin-bottom: 0.75rem;
 }
 
 .chart-container-sm {
@@ -361,77 +371,36 @@ body {
     height: 220px;
 }
 
-/* 折疊樣式 */
-.collapsed-drawer {
-    max-height: 0;
-    overflow: hidden;
-    opacity: 0;
-    margin-bottom: 0;
-    transition: max-height 0.5s cubic-bezier(0, 1, 0, 1), opacity 0.4s ease, margin-bottom 0.4s ease;
-    pointer-events: none;
-}
-
-.collapsed-drawer.open {
-    max-height: 500px;
-    opacity: 1;
-    margin-bottom: 1.5rem;
-    pointer-events: auto;
-}
-
-.btn-close-drawer {
-    background: #e0f2fe;
-    border: none;
-    color: #0284c7;
-    padding: 0.45rem 0.9rem;
-    border-radius: 8px;
-    font-size: 0.8rem;
-    font-weight: 700;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-}
-
-.chart-container {
-    position: relative;
-    height: 320px;
-    width: 100%;
-}
-
-.text-teal { color: var(--primary-teal); }
-.text-blue { color: var(--accent-blue); }
-.text-amber { color: var(--accent-amber); }
-
 .footer {
     text-align: center;
-    padding: 1.5rem;
+    padding: 2rem;
     color: var(--text-muted);
     font-size: 0.85rem;
 }
 
 @media (max-width: 1024px) {
-    .yoy-grid-4, .yoy-grid-5 {
+    .yoy-cards-grid-4, .yoy-cards-grid-5 {
         grid-template-columns: repeat(2, 1fr);
     }
-    .yoy-chart-wrapper {
+    .yoy-charts-two-col {
         grid-template-columns: 1fr;
     }
 }
 
 @media (max-width: 640px) {
-    .yoy-header-bar {
+    .date-header-flex {
         flex-direction: column;
+        align-items: flex-start;
         gap: 1rem;
     }
     .date-picker-box {
         align-items: flex-start;
     }
-    .yoy-comparison-banner {
+    .date-compare-banner {
         flex-direction: column;
         gap: 0.5rem;
     }
-    .yoy-grid-4, .yoy-grid-5 {
+    .yoy-cards-grid-4, .yoy-cards-grid-5 {
         grid-template-columns: 1fr;
     }
 }
-
