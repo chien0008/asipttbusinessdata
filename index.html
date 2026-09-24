@@ -92,7 +92,7 @@
                         <h2 class="block-title">
                             <span class="block-num">三</span> 授權及資助件數及金額同期比較（本年度與上一年度同一年月日比較）
                         </h2>
-                        <p class="block-desc">輸入任意年月日自動比對前一年同期數據（預設為今天日期），直觀顯示增減件數、金額與 % 數</p>
+                        <p class="block-desc">輸入任意年月日自動比對前一年同期數據（預設為今天日期），直接由圖表呈現增減件數、金額與 % 數</p>
                     </div>
 
                     <!-- 日期選擇器 -->
@@ -119,33 +119,26 @@
                     </div>
                 </div>
 
-                <!-- 件數同期對比卡片 (3 項 + 總計) -->
-                <div class="yoy-sub-group">
-                    <h3 class="yoy-group-title"><i class="fa-solid fa-file-signature"></i> 1. 業務件數同期比較 (單位：件)</h3>
-                    <div class="yoy-cards-grid-4" id="yoy-cases-grid">
-                        <!-- 由 JS 動態繪製技術授權、材料移轉、資助計畫及總計卡片 -->
-                    </div>
-                </div>
-
-                <!-- 金額同期對比卡片 (5 項) -->
-                <div class="yoy-sub-group">
-                    <h3 class="yoy-group-title"><i class="fa-solid fa-sack-dollar"></i> 2. 業務金額同期比較 (單位：萬元)</h3>
-                    <div class="yoy-cards-grid-5" id="yoy-amount-grid">
-                        <!-- 由 JS 動態繪製 5 大金額指標卡片 -->
-                    </div>
-                </div>
-
-                <!-- 同期橫向柱狀圖 -->
+                <!-- 精簡後的同期對比圖表區塊 -->
                 <div class="card-box yoy-charts-two-col">
+                    <!-- 件數同期對比圖 -->
                     <div class="sub-chart-box">
-                        <h4 class="sub-chart-title">件數同期對比圖 (件)</h4>
-                        <div class="chart-container-sm">
+                        <div class="chart-top-bar">
+                            <h4 class="sub-chart-title"><i class="fa-solid fa-file-signature text-teal"></i> 業務件數同期對比 (單位：件)</h4>
+                            <div class="summary-badge" id="cases-summary-badge">--</div>
+                        </div>
+                        <div class="chart-container-lg">
                             <canvas id="yoyCasesChart"></canvas>
                         </div>
                     </div>
+
+                    <!-- 金額同期對比圖 -->
                     <div class="sub-chart-box">
-                        <h4 class="sub-chart-title">金額同期對比圖 (萬元)</h4>
-                        <div class="chart-container-sm">
+                        <div class="chart-top-bar">
+                            <h4 class="sub-chart-title"><i class="fa-solid fa-sack-dollar text-blue"></i> 業務金額同期對比 (單位：萬元)</h4>
+                            <div class="summary-badge" id="amounts-summary-badge">--</div>
+                        </div>
+                        <div class="chart-container-lg">
                             <canvas id="yoyAmountChart"></canvas>
                         </div>
                     </div>
