@@ -181,10 +181,10 @@ function renderSingleDoughnut(canvasId, textContainerId, itemKey, hexColor) {
 }
 
 function renderAllDoughnuts() {
-    renderSingleDoughnut('techLicenseDoughnut',  'techLicenseCenterText',  'techLicense',  '#0284C7');
+    renderSingleDoughnut('techLicenseDoughnut',  'techLicenseCenterText',  'techLicense',  '#10B981');
     renderSingleDoughnut('techItemDoughnut',     'techItemCenterText',     'techItem',     '#0F766E');
     renderSingleDoughnut('adDoughnut',           'adCenterText',           'ad',           '#7E22CE');
-    renderSingleDoughnut('grantProjectDoughnut', 'grantProjectCenterText', 'grantProject', '#D97706');
+    renderSingleDoughnut('grantProjectDoughnut', 'grantProjectCenterText', 'grantProject', '#0284C7');
 }
 
 function renderRoyaltyChart() {
