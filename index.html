@@ -3,35 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>智財技轉業務 - 處務會議數據分析儀表板</title>
+    <title>智財技轉業務 - 處務會議高清晰投影簡報儀表板</title>
     <!-- Google Fonts & Font Awesome -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@500;700;800;900&family=Plus+Jakarta+Sans:wght@700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Chart.js 繪圖庫 -->
+    <!-- Chart.js 繪圖庫 & 數據標籤外掛 (投影幕數字直顯) -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
 
     <!-- External CSS -->
     <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="presenter-mode">
 
     <div class="app-container">
         
         <!-- 頁頭簡潔標題欄 -->
         <header class="header">
             <div class="brand">
-                <div class="brand-icon"><i class="fa-solid fa-chart-line"></i></div>
+                <div class="brand-icon"><i class="fa-solid fa-display"></i></div>
                 <div>
                     <h1 class="header-title">智財技轉業務數據分析儀表板</h1>
                     <p class="header-subtitle">處務會議簡報專用 ｜ 110-115 年度數據與同期 YoY 趨勢比較</p>
                 </div>
             </div>
+            <div class="projector-badge">
+                <i class="fa-solid fa-video"></i> 投影幕大字體對比模式
+            </div>
         </header>
 
-        <!-- 主體內容 (嚴謹按照 一、二、三 順序排列) -->
+        <!-- 主體內容 (一、二、三 嚴謹順序) -->
         <main class="main-content">
 
             <!-- ================= 第一項：110-115每年度資助研究計畫簽約金額及件數 ================= -->
@@ -40,16 +44,16 @@
                     <h2 class="block-title">
                         <span class="block-num">一</span> 110-115 每年度資助研究計畫簽約金額及件數比較
                     </h2>
-                    <p class="block-desc">比較各年度簽約成長，點選圖表中任一年份，可在下方展開 1-12 月每月明細件數與金額</p>
+                    <p class="block-desc">💡 比較各年度簽約成長。點選圖表中任一年份，可於下方展開 1-12 月每月明細件數與金額</p>
                 </div>
 
                 <div class="card-box">
-                    <div class="chart-container">
+                    <div class="chart-container-projector">
                         <canvas id="sponsoredYearlyChart"></canvas>
                     </div>
                 </div>
 
-                <!-- 點擊上方年份後才展開的 1~12 月份折疊卡片 -->
+                <!-- 折疊月份卡片 -->
                 <div class="collapsed-drawer" id="monthly-drawer">
                     <div class="card-box drawer-card">
                         <div class="drawer-header">
@@ -60,7 +64,7 @@
                                 <i class="fa-solid fa-xmark"></i> 收起月份明細
                             </button>
                         </div>
-                        <div class="chart-container">
+                        <div class="chart-container-projector">
                             <canvas id="sponsoredMonthlyChart"></canvas>
                         </div>
                     </div>
@@ -78,7 +82,7 @@
                 </div>
 
                 <div class="card-box">
-                    <div class="chart-container">
+                    <div class="chart-container-projector">
                         <canvas id="revenueYearlyChart"></canvas>
                     </div>
                 </div>
@@ -92,12 +96,12 @@
                         <h2 class="block-title">
                             <span class="block-num">三</span> 授權及資助件數及金額同期比較（本年度與上一年度同一年月日比較）
                         </h2>
-                        <p class="block-desc">輸入任意年月日自動比對前一年同期數據（預設為今天日期），直接由圖表呈現增減件數、金額與 % 數</p>
+                        <p class="block-desc">選擇任意年月日，自動比對前一年同期數據（預設為今天日期），數字直顯遠處清晰可見</p>
                     </div>
 
                     <!-- 日期選擇器 -->
                     <div class="date-picker-box">
-                        <label for="yoy-date-input"><i class="fa-regular fa-calendar-check"></i> 請選擇基準年月日：</label>
+                        <label for="yoy-date-input"><i class="fa-regular fa-calendar-check"></i> 選擇基準年月日：</label>
                         <div class="date-input-group">
                             <input type="date" id="yoy-date-input" onchange="handleYoyDateChange(this.value)" />
                             <button class="btn-quick-date" onclick="setQuickDate('today')">今天</button>
@@ -106,15 +110,15 @@
                     </div>
                 </div>
 
-                <!-- 對比日期資訊條 -->
+                <!-- 對比日期資訊條 (投影幕加粗顯眼) -->
                 <div class="date-compare-banner">
                     <div class="banner-date-box">
-                        <span class="banner-tag">本期基準日</span>
+                        <span class="banner-tag">【本期基準日】</span>
                         <span class="banner-date" id="label-curr-date">115 年 09 月 24 日</span>
                     </div>
                     <div class="banner-vs">VS</div>
                     <div class="banner-date-box">
-                        <span class="banner-tag">前一年同期日</span>
+                        <span class="banner-tag">【前一年同期日】</span>
                         <span class="banner-date" id="label-prev-date">114 年 09 月 24 日</span>
                     </div>
                 </div>
@@ -125,9 +129,9 @@
                     <div class="sub-chart-box">
                         <div class="chart-top-bar">
                             <h4 class="sub-chart-title"><i class="fa-solid fa-file-signature text-teal"></i> 業務件數同期對比 (單位：件)</h4>
-                            <div class="summary-badge" id="cases-summary-badge">--</div>
+                            <div class="summary-badge-lg" id="cases-summary-badge">--</div>
                         </div>
-                        <div class="chart-container-lg">
+                        <div class="chart-container-projector-lg">
                             <canvas id="yoyCasesChart"></canvas>
                         </div>
                     </div>
@@ -136,9 +140,9 @@
                     <div class="sub-chart-box">
                         <div class="chart-top-bar">
                             <h4 class="sub-chart-title"><i class="fa-solid fa-sack-dollar text-blue"></i> 業務金額同期對比 (單位：萬元)</h4>
-                            <div class="summary-badge" id="amounts-summary-badge">--</div>
+                            <div class="summary-badge-lg" id="amounts-summary-badge">--</div>
                         </div>
-                        <div class="chart-container-lg">
+                        <div class="chart-container-projector-lg">
                             <canvas id="yoyAmountChart"></canvas>
                         </div>
                     </div>
