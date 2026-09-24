@@ -187,6 +187,7 @@ function renderAllDoughnuts() {
     renderSingleDoughnut('grantProjectDoughnut', 'grantProjectCenterText', 'grantProject', '#0284C7');
 }
 
+/* 5. 權利金（直條圖 Bar Chart） */
 function renderRoyaltyChart() {
     const ctx = document.getElementById('royaltyYearlyChart').getContext('2d');
     const glassGradient = getTranslucentGradient(ctx, '#3B82F6', 0.8, 0.2);
@@ -216,11 +217,15 @@ function renderRoyaltyChart() {
     });
 }
 
+/* 6. 年度科技移轉件數（顏色加深：深綠、淺綠、黃） */
 function renderTechTransferBreakdownChart() {
     const ctx = document.getElementById('techTransferBreakdownChart').getContext('2d');
     
-    const grad1 = getTranslucentGradient(ctx, '#38BDF8', 0.85, 0.35);
+    // ✨ 專屬授權：深綠色 (#059669)
+    const grad1 = getTranslucentGradient(ctx, '#059669', 0.9, 0.4);
+    // ✨ 非專屬授權：淺綠色 (#34D399)
     const grad2 = getTranslucentGradient(ctx, '#34D399', 0.85, 0.35);
+    // ✨ 有償材料移轉：黃色 (#FBBF24)
     const grad3 = getTranslucentGradient(ctx, '#FBBF24', 0.85, 0.35);
 
     techTransferBreakdownChartInstance = new Chart(ctx, {
@@ -506,7 +511,7 @@ function handleYoyDateChange(selectedDateStr) {
     renderYoyCharts(dataObj);
 }
 
-/* ✨ 滑鼠移動到柱狀圖上時，於 Tooltip 動態呈現本期數值、增減件數/金額與 % 數 */
+/* 滑鼠移動到柱狀圖上時，於 Tooltip 動態呈現本期數值、增減件數/金額與 % 數 */
 function renderYoyCharts(dataObj) {
     // 1. 件數同期對比圖表
     const ctxCases = document.getElementById('yoyCasesChart').getContext('2d');
