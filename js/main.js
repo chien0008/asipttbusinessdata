@@ -1,12 +1,13 @@
 /* ==============================================
-   1. 110 - 115 年度暨每月明細資料庫
+   1. 數據庫：110-115 資助計畫與實收收入
    ============================================== */
-const yearlyData = [
+
+// 資助計畫資料 (含每月明細)
+const sponsoredData = [
     {
         year: "110年度",
-        amount: 3200, // 單位：萬元
-        cases: 42,    // 單位：件
-        // 12 個月的件數與金額
+        amount: 3200, // 萬元
+        cases: 42,    // 件
         monthlyCases:  [3, 2, 4, 3, 5, 4, 3, 4, 3, 4, 4, 3],
         monthlyAmount: [220, 180, 310, 240, 380, 290, 210, 320, 250, 300, 310, 190]
     },
@@ -39,7 +40,7 @@ const yearlyData = [
         monthlyAmount: [420, 360, 610, 520, 650, 540, 450, 580, 480, 510, 430, 250]
     },
     {
-        year: "115年度", // 當前進行中/預估
+        year: "115年度",
         amount: 6300,
         cases: 78,
         monthlyCases:  [6, 6, 8, 7, 8, 7, 7, 8, 7, 6, 5, 3],
@@ -47,40 +48,122 @@ const yearlyData = [
     }
 ];
 
+// 科技移轉收入及產學合作實收經費資料
+const revenueData = [
+    { year: "110年度", techTransfer: 1200, industryCoop: 2800 },
+    { year: "111年度", techTransfer: 1450, industryCoop: 3100 },
+    { year: "112年度", techTransfer: 1680, industryCoop: 3500 },
+    { year: "113年度", techTransfer: 1950, industryCoop: 4100 },
+    { year: "114年度", techTransfer: 2200, industryCoop: 4600 },
+    { year: "115年度", techTransfer: 2500, industryCoop: 5100 }
+];
+
 // 全域圖表變數
-let yearlyChartInstance = null;
-let monthlyChartInstance = null;
-let currentSelectedYearIndex = 3; // 預設載入 113年度 (索引 3)
+let sponsoredYearlyChartInstance = null;
+let sponsoredMonthlyChartInstance = null;
+let revenueYearlyChartInstance = null;
 
 /* ==============================================
-   2. 初始化
+   2. 初始化與年度聚焦切換
    ============================================== */
 window.addEventListener('DOMContentLoaded', () => {
-    calculateKpis();
-    renderYearlyChart();
-    updateMonthlyChart(currentSelectedYearIndex);
+    initYearSelectOptions();
+    focusYearData("113年度"); // 預設聚焦觀看 113年度
+    renderSponsoredYearlyChart();
+    renderRevenueYearlyChart();
 });
 
-// 計算總累計 KPI
-function calculateKpis() {
-    const totalAmount = yearlyData.reduce((sum, item) => sum + item.amount, 0);
-    const totalCases = yearlyData.reduce((sum, item) => sum + item.cases, 0);
+function initYearSelectOptions() {
+    const selectEl = document.getElementById('year-select');
+    selectEl.innerHTML = '';
+    sponsoredData.forEach(item => {
+        const option = document.createElement('option');
+        option.value = item.year;
+        option.textContent = item.year;
+        if(item.year === "113年度") option.selected = true;
+        selectEl.appendChild(option);
+    });
+}
 
-    document.getElementById('total-amount').textContent = `${totalAmount.toLocaleString()} 萬元`;
-    document.getElementById('total-cases').textContent = `${totalCases.toLocaleString()} 件`;
+function focusYearData(targetYear) {
+    document.getElementById('current-focused-year').textContent = targetYear;
+    const yearIndex = sponsoredData.findIndex(item => item.year === targetYear);
+    if (yearIndex === -1) return;
+
+    // 計算相較於上年度的攀升/下滑幅度
+    updateTrendMetrics(yearIndex);
+
+    // 同步更新子圖表
+    updateSponsoredMonthlyChart(yearIndex);
 }
 
 /* ==============================================
-   3. 繪製 110 - 115 歷年比較圖 (主圖表)
+   3. 計算攀升/下滑幅度 % 與差額
    ============================================== */
-function renderYearlyChart() {
-    const ctx = document.getElementById('yearlyChart').getContext('2d');
+function updateTrendMetrics(index) {
+    const currSponsored = sponsoredData[index];
+    const currRevenue = revenueData[index];
+    const currGrandTotal = currRevenue.techTransfer + currRevenue.industryCoop;
 
-    const labels = yearlyData.map(item => item.year);
-    const amounts = yearlyData.map(item => item.amount);
-    const cases = yearlyData.map(item => item.cases);
+    // 填入本期數據
+    document.getElementById('sponsored-amount-val').textContent = `${currSponsored.amount.toLocaleString()} 萬元`;
+    document.getElementById('sponsored-cases-val').textContent = `${currSponsored.cases} 件`;
+    document.getElementById('tech-revenue-val').textContent = `${currRevenue.techTransfer.toLocaleString()} 萬元`;
+    document.getElementById('grand-total-val').textContent = `${currGrandTotal.toLocaleString()} 萬元`;
 
-    yearlyChartInstance = new Chart(ctx, {
+    // 上期比對 (若為基期 110年度 則無比對)
+    if (index > 0) {
+        const prevSponsored = sponsoredData[index - 1];
+        const prevRevenue = revenueData[index - 1];
+        const prevGrandTotal = prevRevenue.techTransfer + prevRevenue.industryCoop;
+
+        renderBadge('sponsored-amount-badge', currSponsored.amount, prevSponsored.amount, '萬元');
+        renderBadge('sponsored-cases-badge', currSponsored.cases, prevSponsored.cases, '件');
+        renderBadge('tech-revenue-badge', currRevenue.techTransfer, prevRevenue.techTransfer, '萬元');
+        renderBadge('grand-total-badge', currGrandTotal, prevGrandTotal, '萬元');
+    } else {
+        const baseBadge = `<i class="fa-solid fa-minus"></i> 基期年度`;
+        document.getElementById('sponsored-amount-badge').className = 'trend-badge badge-flat';
+        document.getElementById('sponsored-amount-badge').innerHTML = baseBadge;
+
+        document.getElementById('sponsored-cases-badge').className = 'trend-badge badge-flat';
+        document.getElementById('sponsored-cases-badge').innerHTML = baseBadge;
+
+        document.getElementById('tech-revenue-badge').className = 'trend-badge badge-flat';
+        document.getElementById('tech-revenue-badge').innerHTML = baseBadge;
+
+        document.getElementById('grand-total-badge').className = 'trend-badge badge-flat';
+        document.getElementById('grand-total-badge').innerHTML = baseBadge;
+    }
+}
+
+// 通用渲染 Badge 工具
+function renderBadge(elementId, currVal, prevVal, unit) {
+    const badgeEl = document.getElementById(elementId);
+    const diff = currVal - prevVal;
+    const isUp = diff >= 0;
+    const percent = ((Math.abs(diff) / prevVal) * 100).toFixed(1);
+
+    if (diff === 0) {
+        badgeEl.className = 'trend-badge badge-flat';
+        badgeEl.innerHTML = `<i class="fa-solid fa-minus"></i> 持平 (0%)`;
+    } else if (isUp) {
+        badgeEl.className = 'trend-badge badge-up';
+        badgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> 攀升 +${diff.toLocaleString()} ${unit} (+${percent}%)`;
+    } else {
+        badgeEl.className = 'trend-badge badge-down';
+        badgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-down"></i> 下滑 ${diff.toLocaleString()} ${unit} (-${percent}%)`;
+    }
+}
+
+/* ==============================================
+   4. 圖表一：資助研究計畫攀升圖與 Tooltip 成長率
+   ============================================== */
+function renderSponsoredYearlyChart() {
+    const ctx = document.getElementById('sponsoredYearlyChart').getContext('2d');
+    const labels = sponsoredData.map(item => item.year);
+
+    sponsoredYearlyChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: labels,
@@ -88,22 +171,19 @@ function renderYearlyChart() {
                 {
                     type: 'bar',
                     label: '簽約金額 (萬元)',
-                    data: amounts,
+                    data: sponsoredData.map(item => item.amount),
                     backgroundColor: 'rgba(13, 110, 99, 0.85)',
-                    hoverBackgroundColor: '#084841',
                     borderRadius: 8,
                     yAxisID: 'yAmount'
                 },
                 {
                     type: 'line',
                     label: '簽約件數 (件)',
-                    data: cases,
-                    borderColor: '#d97706',
-                    backgroundColor: '#d97706',
+                    data: sponsoredData.map(item => item.cases),
+                    borderColor: '#0284c7',
+                    backgroundColor: '#0284c7',
                     borderWidth: 3,
                     pointRadius: 6,
-                    pointHoverRadius: 9,
-                    tension: 0.3,
                     yAxisID: 'yCases'
                 }
             ]
@@ -112,71 +192,50 @@ function renderYearlyChart() {
             responsive: true,
             maintainAspectRatio: false,
             onClick: (event, elements) => {
-                // 點擊柱狀圖鑽取該年份
                 if (elements.length > 0) {
                     const index = elements[0].index;
-                    updateMonthlyChart(index);
+                    const targetYear = sponsoredData[index].year;
+                    document.getElementById('year-select').value = targetYear;
+                    focusYearData(targetYear);
                 }
             },
             plugins: {
                 tooltip: {
                     callbacks: {
-                        footer: () => '💡 點擊此柱可查看該年度每月細節'
+                        afterLabel: (context) => {
+                            const dataIndex = context.dataIndex;
+                            if (dataIndex > 0) {
+                                const dataset = context.dataset.data;
+                                const curr = dataset[dataIndex];
+                                const prev = dataset[dataIndex - 1];
+                                const diff = curr - prev;
+                                const percent = ((Math.abs(diff) / prev) * 100).toFixed(1);
+                                const isUp = diff >= 0;
+                                return `較上年: ${isUp ? '↑ 攀升' : '↓ 下滑'} ${Math.abs(diff)} (${isUp ? '+' : '-'}${percent}%)`;
+                            }
+                            return '基期年度';
+                        }
                     }
                 }
             },
             scales: {
-                yAmount: {
-                    type: 'linear',
-                    position: 'left',
-                    title: { display: true, text: '簽約金額 (萬元)' },
-                    beginAtZero: true
-                },
-                yCases: {
-                    type: 'linear',
-                    position: 'right',
-                    title: { display: true, text: '簽約件數 (件)' },
-                    beginAtZero: true,
-                    grid: { drawOnChartArea: false } // 避免雙軸網格線重疊
-                }
+                yAmount: { type: 'linear', position: 'left', beginAtZero: true, title: { display: true, text: '金額 (萬元)' } },
+                yCases: { type: 'linear', position: 'right', beginAtZero: true, grid: { drawOnChartArea: false }, title: { display: true, text: '件數 (件)' } }
             }
         }
     });
 }
 
-/* ==============================================
-   4. 更新 1-12 月份明細圖表 (子圖表)
-   ============================================== */
-function updateMonthlyChart(yearIndex) {
-    currentSelectedYearIndex = yearIndex;
-    const yearObj = yearlyData[yearIndex];
+function updateSponsoredMonthlyChart(yearIndex) {
+    const yearObj = sponsoredData[yearIndex];
+    document.getElementById('drilldown-year-title').textContent = yearObj.year;
 
-    // 更新介面卡片文字
-    document.getElementById('selected-year-label').textContent = `${yearObj.year} 簽約金額`;
-    document.getElementById('selected-year-badge').textContent = yearObj.year;
-    document.getElementById('selected-year-amount').textContent = `${yearObj.amount.toLocaleString()} 萬元 (${yearObj.cases} 件)`;
-    document.getElementById('monthly-chart-title').textContent = yearObj.year;
-
-    // 計算成長率
-    const growthEl = document.getElementById('selected-year-growth');
-    if (yearIndex > 0) {
-        const prevAmount = yearlyData[yearIndex - 1].amount;
-        const diff = yearObj.amount - prevAmount;
-        const percent = ((diff / prevAmount) * 100).toFixed(1);
-        growthEl.textContent = `較前一年度: ${diff >= 0 ? '+' : ''}${diff} 萬元 (${percent}%)`;
-    } else {
-        growthEl.textContent = `基期年度`;
-    }
-
-    // 繪製或更新月份圖表
-    const ctx = document.getElementById('monthlyChart').getContext('2d');
+    const ctx = document.getElementById('sponsoredMonthlyChart').getContext('2d');
     const monthLabels = ["1月", "2月", "3月", "4月", "5月", "6月", "7月", "8月", "9月", "10月", "11月", "12月"];
 
-    if (monthlyChartInstance) {
-        monthlyChartInstance.destroy();
-    }
+    if (sponsoredMonthlyChartInstance) sponsoredMonthlyChartInstance.destroy();
 
-    monthlyChartInstance = new Chart(ctx, {
+    sponsoredMonthlyChartInstance = new Chart(ctx, {
         type: 'bar',
         data: {
             labels: monthLabels,
@@ -205,24 +264,85 @@ function updateMonthlyChart(yearIndex) {
             responsive: true,
             maintainAspectRatio: false,
             scales: {
-                yMonthAmount: {
-                    type: 'linear',
-                    position: 'left',
-                    title: { display: true, text: '金額 (萬元)' },
-                    beginAtZero: true
-                },
-                yMonthCases: {
-                    type: 'linear',
-                    position: 'right',
-                    title: { display: true, text: '件數 (件)' },
-                    beginAtZero: true,
-                    grid: { drawOnChartArea: false }
-                }
+                yMonthAmount: { type: 'linear', position: 'left', beginAtZero: true, title: { display: true, text: '金額 (萬元)' } },
+                yMonthCases: { type: 'linear', position: 'right', beginAtZero: true, grid: { drawOnChartArea: false }, title: { display: true, text: '件數 (件)' } }
             }
         }
     });
 }
 
 function resetYearSelection() {
-    updateMonthlyChart(yearlyData.length - 1); // 重置為最新年度 (115年度)
+    const latestYear = sponsoredData[sponsoredData.length - 1].year;
+    document.getElementById('year-select').value = latestYear;
+    focusYearData(latestYear);
+}
+
+/* ==============================================
+   5. 圖表二：科技移轉與產學實收攀升/下滑對比圖
+   ============================================== */
+function renderRevenueYearlyChart() {
+    const ctx = document.getElementById('revenueYearlyChart').getContext('2d');
+    const labels = revenueData.map(item => item.year);
+    const techTransfers = revenueData.map(item => item.techTransfer);
+    const industryCoops = revenueData.map(item => item.industryCoop);
+    const grandTotals = revenueData.map(item => item.techTransfer + item.industryCoop);
+
+    revenueYearlyChartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: labels,
+            datasets: [
+                {
+                    type: 'bar',
+                    label: '科技移轉收入 (萬元)',
+                    data: techTransfers,
+                    backgroundColor: 'rgba(13, 110, 99, 0.85)',
+                    borderRadius: 6
+                },
+                {
+                    type: 'bar',
+                    label: '產學合作實收經費 (萬元)',
+                    data: industryCoops,
+                    backgroundColor: 'rgba(2, 132, 199, 0.85)',
+                    borderRadius: 6
+                },
+                {
+                    type: 'line',
+                    label: '總金額 (科技移轉＋產學合作)',
+                    data: grandTotals,
+                    borderColor: '#d97706',
+                    backgroundColor: '#d97706',
+                    borderWidth: 3,
+                    pointRadius: 6,
+                    tension: 0.3
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        afterLabel: (context) => {
+                            const dataIndex = context.dataIndex;
+                            if (dataIndex > 0) {
+                                const dataset = context.dataset.data;
+                                const curr = dataset[dataIndex];
+                                const prev = dataset[dataIndex - 1];
+                                const diff = curr - prev;
+                                const percent = ((Math.abs(diff) / prev) * 100).toFixed(1);
+                                const isUp = diff >= 0;
+                                return `較上年: ${isUp ? '↑ 攀升' : '↓ 下滑'} ${Math.abs(diff)} 萬元 (${isUp ? '+' : '-'}${percent}%)`;
+                            }
+                            return '基期年度';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true, title: { display: true, text: '金額 (萬元)' } }
+            }
+        }
+    });
 }
