@@ -2,7 +2,6 @@
    1. 第一項與第二項歷史數據庫 (110 - 115)
    ============================================== */
 
-// 第一項：資助研究計畫數據 (含月份明細)
 const sponsoredData = [
     { year: "110年度", amount: 3200, cases: 42, monthlyCases: [3, 2, 4, 3, 5, 4, 3, 4, 3, 4, 4, 3], monthlyAmount: [220, 180, 310, 240, 380, 290, 210, 320, 250, 300, 310, 190] },
     { year: "111年度", amount: 3850, cases: 50, monthlyCases: [4, 3, 5, 4, 5, 4, 4, 5, 4, 4, 5, 3], monthlyAmount: [280, 210, 390, 310, 410, 320, 290, 380, 300, 330, 400, 230] },
@@ -12,7 +11,6 @@ const sponsoredData = [
     { year: "115年度", amount: 6300, cases: 78, monthlyCases: [6, 6, 8, 7, 8, 7, 7, 8, 7, 6, 5, 3], monthlyAmount: [460, 410, 680, 590, 720, 610, 510, 640, 530, 480, 420, 250] }
 ];
 
-// 第二項：科技移轉收入及產學合作實收經費
 const revenueData = [
     { year: "110年度", techTransfer: 1200, industryCoop: 2800 },
     { year: "111年度", techTransfer: 1450, industryCoop: 3100 },
@@ -27,7 +25,6 @@ const revenueData = [
    ============================================== */
 
 const yoyHistoricalDatabase = {
-    // 預設今天日期：115.09.24 vs 114.09.24
     "2026-09-24": {
         currDateLabel: "115 年 09 月 24 日",
         prevDateLabel: "114 年 09 月 24 日",
@@ -36,7 +33,6 @@ const yoyHistoricalDatabase = {
         amounts: { techRevenueTotal: 2150, royalty: 1350, contractValueTotal: 3400, techRevenueCashStock: 2250, sponsoredRealized: 4800 },
         amountsPrev: { techRevenueTotal: 1800, royalty: 1100, contractValueTotal: 2900, techRevenueCashStock: 1900, sponsoredRealized: 4200 }
     },
-    // 測試範例：115.09.19 vs 114.09.18
     "2026-09-19": {
         currDateLabel: "115 年 09 月 19 日",
         prevDateLabel: "114 年 09 月 18 日",
@@ -57,17 +53,15 @@ let yoyAmountChartInstance = null;
    3. 初始化載入
    ============================================== */
 window.addEventListener('DOMContentLoaded', () => {
-    // 預設日期為 2026-09-24
     document.getElementById('yoy-date-input').value = "2026-09-24";
     handleYoyDateChange("2026-09-24");
 
-    // 渲染第一項與第二項
     renderSponsoredYearlyChart();
     renderRevenueYearlyChart();
 });
 
 /* ==============================================
-   4. 第一項邏輯：資助計畫與點擊展開 1-12 月
+   4. 第一項與第二項圖表邏輯
    ============================================== */
 function renderSponsoredYearlyChart() {
     const ctx = document.getElementById('sponsoredYearlyChart').getContext('2d');
@@ -132,9 +126,6 @@ function updateSponsoredMonthlyChart(yearIndex) {
     });
 }
 
-/* ==============================================
-   5. 第二項邏輯：科技移轉與產學合作實收
-   ============================================== */
 function renderRevenueYearlyChart() {
     const ctx = document.getElementById('revenueYearlyChart').getContext('2d');
     revenueYearlyChartInstance = new Chart(ctx, {
@@ -156,7 +147,7 @@ function renderRevenueYearlyChart() {
 }
 
 /* ==============================================
-   6. 第三項邏輯：同期 YoY 選擇器與即時計算
+   5. 第三項邏輯：同期 YoY 選擇器與圖表直接呈現
    ============================================== */
 function setQuickDate(type) {
     const dateInput = document.getElementById('yoy-date-input');
@@ -195,122 +186,121 @@ function handleYoyDateChange(selectedDateStr) {
     document.getElementById('label-curr-date').textContent = dataObj.currDateLabel;
     document.getElementById('label-prev-date').textContent = dataObj.prevDateLabel;
 
-    renderYoyCasesGrid(dataObj.cases, dataObj.casesPrev);
-    renderYoyAmountsGrid(dataObj.amounts, dataObj.amountsPrev);
+    // 計算總件數與總金額增減，並渲染至圖表上方 Badge
+    updateYoyTopBadges(dataObj);
+
+    // 繪製強化的 YoY 圖表 (含詳盡 Tooltip)
     renderYoyCharts(dataObj);
 }
 
-function renderYoyCasesGrid(curr, prev) {
-    const grid = document.getElementById('yoy-cases-grid');
-    grid.innerHTML = '';
+function updateYoyTopBadges(dataObj) {
+    // 1. 計算件數總和與增減
+    const totalCasesCurr = dataObj.cases.techLicense + dataObj.cases.materialTransfer + dataObj.cases.sponsoredProject;
+    const totalCasesPrev = dataObj.casesPrev.techLicense + dataObj.casesPrev.materialTransfer + dataObj.casesPrev.sponsoredProject;
+    const diffCases = totalCasesCurr - totalCasesPrev;
+    const percentCases = ((Math.abs(diffCases) / totalCasesPrev) * 100).toFixed(1);
 
-    const items = [
-        { key: 'techLicense', title: '技術授權件數' },
-        { key: 'materialTransfer', title: '材料移轉件數' },
-        { key: 'sponsoredProject', title: '資助研究計畫件數' }
-    ];
-
-    let totalCurr = 0;
-    let totalPrev = 0;
-
-    items.forEach(item => {
-        const cVal = curr[item.key] || 0;
-        const pVal = prev[item.key] || 0;
-        totalCurr += cVal;
-        totalPrev += pVal;
-        grid.appendChild(createYoyCardHtml(item.title, cVal, pVal, '件'));
-    });
-
-    // 件數總計
-    grid.appendChild(createYoyCardHtml('件數總計 (三大業務)', totalCurr, totalPrev, '件', true));
-}
-
-function renderYoyAmountsGrid(curr, prev) {
-    const grid = document.getElementById('yoy-amount-grid');
-    grid.innerHTML = '';
-
-    const items = [
-        { key: 'techRevenueTotal', title: '科技移轉總收入' },
-        { key: 'royalty', title: '權利金' },
-        { key: 'contractValueTotal', title: '授權合約總價值<br><small>(現金＋股票)</small>' },
-        { key: 'techRevenueCashStock', title: '科技移轉總收入<br><small>(現金＋股票)</small>' },
-        { key: 'sponsoredRealized', title: '資助計劃實收經費' }
-    ];
-
-    items.forEach(item => {
-        const cVal = curr[item.key] || 0;
-        const pVal = prev[item.key] || 0;
-        grid.appendChild(createYoyCardHtml(item.title, cVal, pVal, '萬元'));
-    });
-}
-
-// ✨ 一眼掌握的 4 個重點資訊卡片產生器
-function createYoyCardHtml(title, currVal, prevVal, unit, isTotal = false) {
-    const diff = currVal - prevVal;
-    const isUp = diff >= 0;
-    const percent = prevVal > 0 ? ((Math.abs(diff) / prevVal) * 100).toFixed(1) : "0.0";
-
-    const card = document.createElement('div');
-    card.className = `yoy-card-item ${isTotal ? 'total-card' : ''}`;
-
-    let badgeClass = 'badge-flat';
-    let iconTag = '<i class="fa-solid fa-minus"></i>';
-    let signStr = '';
-
-    if (diff > 0) {
-        badgeClass = 'badge-up';
-        iconTag = '<i class="fa-solid fa-arrow-trend-up"></i>';
-        signStr = '+';
-    } else if (diff < 0) {
-        badgeClass = 'badge-down';
-        iconTag = '<i class="fa-solid fa-arrow-trend-down"></i>';
-        signStr = '-';
+    const casesBadgeEl = document.getElementById('cases-summary-badge');
+    if (diffCases >= 0) {
+        casesBadgeEl.className = 'summary-badge badge-up';
+        casesBadgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> 本期 ${totalCasesCurr} 件 (較去年 +${diffCases}件, +${percentCases}%)`;
+    } else {
+        casesBadgeEl.className = 'summary-badge badge-down';
+        casesBadgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-down"></i> 本期 ${totalCasesCurr} 件 (較去年 -${Math.abs(diffCases)}件, -${percentCases}%)`;
     }
 
-    const diffAbs = Math.abs(diff).toLocaleString();
+    // 2. 計算金額總和與增減
+    const totalAmtCurr = dataObj.amounts.techRevenueTotal + dataObj.amounts.sponsoredRealized;
+    const totalAmtPrev = dataObj.amountsPrev.techRevenueTotal + dataObj.amountsPrev.sponsoredRealized;
+    const diffAmt = totalAmtCurr - totalAmtPrev;
+    const percentAmt = ((Math.abs(diffAmt) / totalAmtPrev) * 100).toFixed(1);
 
-    card.innerHTML = `
-        <div class="item-title">${title}</div>
-        <div class="item-curr-val">${currVal.toLocaleString()} <small>${unit}</small></div>
-        
-        <div class="item-diff-badge ${badgeClass}">
-            <span>${iconTag} ${signStr}${diffAbs} ${unit}</span>
-            <span>(${signStr}${percent}%)</span>
-        </div>
-
-        <div class="item-prev-val">去年同期: ${prevVal.toLocaleString()} ${unit}</div>
-    `;
-    return card;
+    const amtBadgeEl = document.getElementById('amounts-summary-badge');
+    if (diffAmt >= 0) {
+        amtBadgeEl.className = 'summary-badge badge-up';
+        amtBadgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-up"></i> 本期實收 ${totalAmtCurr.toLocaleString()} 萬 (較去年 +${diffAmt.toLocaleString()}萬, +${percentAmt}%)`;
+    } else {
+        amtBadgeEl.className = 'summary-badge badge-down';
+        amtBadgeEl.innerHTML = `<i class="fa-solid fa-arrow-trend-down"></i> 本期實收 ${totalAmtCurr.toLocaleString()} 萬 (較去年 -${Math.abs(diffAmt).toLocaleString()}萬, -${percentAmt}%)`;
+    }
 }
 
 function renderYoyCharts(dataObj) {
+    // A. 件數同期對比圖表
     const ctxCases = document.getElementById('yoyCasesChart').getContext('2d');
     if (yoyCasesChartInstance) yoyCasesChartInstance.destroy();
+
+    const casesCurrArray = [dataObj.cases.techLicense, dataObj.cases.materialTransfer, dataObj.cases.sponsoredProject];
+    const casesPrevArray = [dataObj.casesPrev.techLicense, dataObj.casesPrev.materialTransfer, dataObj.casesPrev.sponsoredProject];
 
     yoyCasesChartInstance = new Chart(ctxCases, {
         type: 'bar',
         data: {
-            labels: ['技術授權', '材料移轉', '資助計畫'],
+            labels: ['技術授權件數', '材料移轉件數', '資助研究計畫件數'],
             datasets: [
-                { label: '本期件數', data: [dataObj.cases.techLicense, dataObj.cases.materialTransfer, dataObj.cases.sponsoredProject], backgroundColor: '#0d6e63', borderRadius: 4 },
-                { label: '去年同期件數', data: [dataObj.casesPrev.techLicense, dataObj.casesPrev.materialTransfer, dataObj.casesPrev.sponsoredProject], backgroundColor: '#cbd5e1', borderRadius: 4 }
+                { label: '本期件數', data: casesCurrArray, backgroundColor: '#0d6e63', borderRadius: 6 },
+                { label: '去年同期件數', data: casesPrevArray, backgroundColor: '#cbd5e1', borderRadius: 6 }
             ]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true } } }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top' },
+                tooltip: {
+                    callbacks: {
+                        afterBody: (tooltipItems) => {
+                            const index = tooltipItems[0].dataIndex;
+                            const curr = casesCurrArray[index];
+                            const prev = casesPrevArray[index];
+                            const diff = curr - prev;
+                            const percent = ((Math.abs(diff) / prev) * 100).toFixed(1);
+                            const sign = diff >= 0 ? '+' : '-';
+                            return `\n-------------------\n較去年同期: ${diff >= 0 ? '↑ 攀升' : '↓ 下滑'} ${sign}${Math.abs(diff)} 件 (${sign}${percent}%)`;
+                        }
+                    }
+                }
+            },
+            scales: { y: { beginAtZero: true, title: { display: true, text: '件數 (件)' } } }
+        }
     });
 
+    // B. 金額同期對比圖表
     const ctxAmount = document.getElementById('yoyAmountChart').getContext('2d');
     if (yoyAmountChartInstance) yoyAmountChartInstance.destroy();
+
+    const amtCurrArray = Object.values(dataObj.amounts);
+    const amtPrevArray = Object.values(dataObj.amountsPrev);
 
     yoyAmountChartInstance = new Chart(ctxAmount, {
         type: 'bar',
         data: {
-            labels: ['科移總收入', '權利金', '合約總價值', '科移(現金+股)', '資助實收'],
+            labels: ['科技移轉總收入', '權利金', '合約總價值(現+股)', '科移收入(現+股)', '資助計畫實收'],
             datasets: [
-                { label: '本期金額 (萬)', data: Object.values(dataObj.amounts), backgroundColor: '#0284c7', borderRadius: 4 },
-                { label: '去年同期金額 (萬)', data: Object.values(dataObj.amountsPrev), backgroundColor: '#94a3b8', borderRadius: 4 }
+                { label: '本期金額 (萬元)', data: amtCurrArray, backgroundColor: '#0284c7', borderRadius: 6 },
+                { label: '去年同期金額 (萬元)', data: amtPrevArray, backgroundColor: '#94a3b8', borderRadius: 6 }
             ]
         },
-        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true } } }
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { position: 'top' },
+                tooltip: {
+                    callbacks: {
+                        afterBody: (tooltipItems) => {
+                            const index = tooltipItems[0].dataIndex;
+                            const curr = amtCurrArray[index];
+                            const prev = amtPrevArray[index];
+                            const diff = curr - prev;
+                            const percent = ((Math.abs(diff) / prev) * 100).toFixed(1);
+                            const sign = diff >= 0 ? '+' : '-';
+                            return `\n-------------------\n較去年同期: ${diff >= 0 ? '↑ 攀升' : '↓ 下滑'} ${sign}${Math.abs(diff).toLocaleString()} 萬元 (${sign}${percent}%)`;
+                        }
+                    }
+                }
+            },
+            scales: { y: { beginAtZero: true, title: { display: true, text: '金額 (萬元)' } } }
+        }
     });
 }
