@@ -20,7 +20,7 @@
 
     <div class="app-container">
         
-        <!-- 頂層簡介列 -->
+        <!-- 頁頭標題欄 -->
         <header class="header">
             <div class="brand">
                 <div class="brand-icon"><i class="fa-solid fa-chart-line"></i></div>
@@ -34,200 +34,255 @@
             </button>
         </header>
 
-        <!-- 置頂快捷導覽列 (Sticky Nav) -->
-        <nav class="sticky-nav">
-            <div class="nav-btn-group">
-                <a href="#section-1" class="nav-btn active" id="nav-btn-1">
-                    <span class="nav-num">一</span> 智財技轉業務資料
-                </a>
-                <a href="#section-2" class="nav-btn" id="nav-btn-2">
-                    <span class="nav-num">二</span> 技術授權業務資料
-                </a>
-                <a href="#section-3" class="nav-btn" id="nav-btn-3">
-                    <span class="nav-num">三</span> 授權及資助同期比較 (YoY)
-                </a>
-            </div>
+        <!-- 置頂主要頁籤導覽列 (Main Tabs) -->
+        <nav class="main-tab-nav">
+            <button class="tab-btn active" id="tab-btn-1" onclick="switchMainTab('tab-1')">
+                <i class="fa-solid fa-folder-open"></i> 智財技轉業務資料 (共 3 大項)
+            </button>
+            <button class="tab-btn" id="tab-btn-2" onclick="switchMainTab('tab-2')">
+                <i class="fa-solid fa-key"></i> 技術授權業務資料 (共 7 大項)
+            </button>
         </nav>
 
-        <!-- 主體內容 -->
+        <!-- 主體內容區塊 -->
         <main class="main-content">
 
-            <!-- ================= 第一項：智財技轉業務資料 (110-115每年度資助研究計畫簽約金額及件數) ================= -->
-            <section class="section-block" id="section-1">
-                <div class="block-header">
-                    <h2 class="block-title">
-                        <span class="block-num">一</span> 智財技轉業務資料：110-115 每年度資助研究計畫簽約金額及件數比較
-                    </h2>
-                    <p class="block-desc">比較各年度簽約成長，點選圖表中任一年份，可在下方展開 1-12 月每月明細件數與金額</p>
-                </div>
-
-                <div class="card-box">
-                    <div class="chart-container">
-                        <canvas id="sponsoredYearlyChart"></canvas>
+            <!-- ================================================================= -->
+            <!-- 📌 主分頁一：智財技轉業務資料                                       -->
+            <!-- ================================================================= -->
+            <div class="tab-content active" id="tab-1">
+                
+                <!-- 1. 110-115 每年度資助研究計畫簽約金額及件數比較 -->
+                <section class="section-block">
+                    <div class="block-header">
+                        <h2 class="block-title">
+                            <span class="block-num">1</span> 110-115 每年度資助研究計畫簽約金額及件數比較
+                        </h2>
+                        <p class="block-desc">比較各年度簽約成長，點選圖表中任一年份，可在下方展開 1-12 月每月明細件數與金額</p>
                     </div>
-                </div>
 
-                <div class="collapsed-drawer" id="monthly-drawer">
-                    <div class="card-box drawer-card">
-                        <div class="drawer-header">
-                            <h3 class="drawer-title">
-                                <i class="fa-solid fa-calendar-days"></i> <span id="drilldown-year-title">113 年度</span> 1~12 月逐月簽約件數與金額明細
-                            </h3>
-                            <button class="btn-close-drawer" onclick="closeMonthlyDrawer()">
-                                <i class="fa-solid fa-xmark"></i> 收起月份明細
-                            </button>
-                        </div>
+                    <div class="card-box">
                         <div class="chart-container">
-                            <canvas id="sponsoredMonthlyChart"></canvas>
+                            <canvas id="sponsoredYearlyChart"></canvas>
                         </div>
                     </div>
-                </div>
-            </section>
 
+                    <div class="collapsed-drawer" id="monthly-drawer">
+                        <div class="card-box drawer-card">
+                            <div class="drawer-header">
+                                <h3 class="drawer-title">
+                                    <i class="fa-solid fa-calendar-days"></i> <span id="drilldown-year-title">113 年度</span> 1~12 月逐月簽約件數與金額明細
+                                </h3>
+                                <button class="btn-close-drawer" onclick="closeMonthlyDrawer()">
+                                    <i class="fa-solid fa-xmark"></i> 收起月份明細
+                                </button>
+                            </div>
+                            <div class="chart-container">
+                                <canvas id="sponsoredMonthlyChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
 
-            <!-- ================= 第二項：技術授權業務資料 (四大極光漸層環形達成率 + 權利金) ================= -->
-            <section class="section-block" id="section-2">
-                <div class="block-header block-header-flex">
-                    <div>
+                <!-- 2. 授權及資助件數及金額同期比較 (YoY) -->
+                <section class="section-block">
+                    <div class="block-header date-header-flex">
+                        <div>
+                            <h2 class="block-title">
+                                <span class="block-num">2</span> 授權及資助件數及金額同期比較（本年度與上一年度同一年月日比較）
+                            </h2>
+                            <p class="block-desc">選擇任意年月日，自動比對前一年同期數據（預設為今天日期），直接由圖表呈現增減件數、金額與 % 數</p>
+                        </div>
+
+                        <div class="date-picker-box">
+                            <label for="yoy-date-input"><i class="fa-regular fa-calendar-check"></i> 請選擇基準年月日：</label>
+                            <div class="date-input-group">
+                                <input type="date" id="yoy-date-input" onchange="handleYoyDateChange(this.value)" />
+                                <button class="btn-quick-date" onclick="setQuickDate('today')">今天</button>
+                                <button class="btn-quick-date" onclick="setQuickDate('115-09-19')">範例 (115.09.19)</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="date-compare-banner">
+                        <div class="banner-date-box">
+                            <span class="banner-tag">本期基準日</span>
+                            <span class="banner-date" id="label-curr-date">115 年 09 月 24 日</span>
+                        </div>
+                        <div class="banner-vs">VS</div>
+                        <div class="banner-date-box">
+                            <span class="banner-tag">前一年同期日</span>
+                            <span class="banner-date" id="label-prev-date">114 年 09 月 24 日</span>
+                        </div>
+                    </div>
+
+                    <div class="card-box yoy-charts-two-col">
+                        <div class="sub-chart-box">
+                            <div class="chart-top-bar">
+                                <h4 class="sub-chart-title"><i class="fa-solid fa-file-signature text-teal"></i> 業務件數同期對比 (單位：件)</h4>
+                                <div class="summary-badge" id="cases-summary-badge">--</div>
+                            </div>
+                            <div class="chart-container-lg">
+                                <canvas id="yoyCasesChart"></canvas>
+                            </div>
+                        </div>
+
+                        <div class="sub-chart-box">
+                            <div class="chart-top-bar">
+                                <h4 class="sub-chart-title"><i class="fa-solid fa-sack-dollar text-blue"></i> 業務金額同期對比 (單位：萬元)</h4>
+                                <div class="summary-badge" id="amounts-summary-badge">--</div>
+                            </div>
+                            <div class="chart-container-lg">
+                                <canvas id="yoyAmountChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. 科技移轉收入及產學合作實收經費 -->
+                <section class="section-block">
+                    <div class="block-header">
                         <h2 class="block-title">
-                            <span class="block-num">二</span> 技術授權業務資料：各項目標達成率與歷年權利金
+                            <span class="block-num">3</span> 科技移轉收入及產學合作實收經費（110 - 115 年度）
                         </h2>
-                        <p class="block-desc">呈現技術授權、項次、AD 及資助計畫之年度目標達成率與 110-115 歷年權利金</p>
-                    </div>
-                </div>
-
-                <!-- 四大達成率環形圖 (極光漸層風) -->
-                <div class="kpi-doughnut-grid">
-                    
-                    <!-- 1. 技術授權 達成率 -->
-                    <div class="doughnut-card">
-                        <div class="doughnut-card-header">
-                            <i class="fa-solid fa-key icon-teal"></i>
-                            <h3 class="doughnut-card-title">一、技術授權 達成率</h3>
-                        </div>
-                        <div class="doughnut-chart-wrapper">
-                            <canvas id="techLicenseDoughnut"></canvas>
-                            <div class="doughnut-center-text" id="techLicenseCenterText">
-                                <span class="rate-val">--%</span>
-                                <span class="count-val">--/-- 件</span>
-                            </div>
-                        </div>
+                        <p class="block-desc">柱狀呈現各項實收經費，折線代表兩者相加之年度總金額（科技移轉收入＋產學合作實收）</p>
                     </div>
 
-                    <!-- 2. 技術授權項次 達成率 -->
-                    <div class="doughnut-card">
-                        <div class="doughnut-card-header">
-                            <i class="fa-solid fa-list-check icon-blue"></i>
-                            <h3 class="doughnut-card-title">二、技術授權項次 達成率</h3>
-                        </div>
-                        <div class="doughnut-chart-wrapper">
-                            <canvas id="techItemDoughnut"></canvas>
-                            <div class="doughnut-center-text" id="techItemCenterText">
-                                <span class="rate-val">--%</span>
-                                <span class="count-val">--/-- 項</span>
-                            </div>
+                    <div class="card-box">
+                        <div class="chart-container">
+                            <canvas id="revenueYearlyChart"></canvas>
                         </div>
                     </div>
+                </section>
 
-                    <!-- 3. AD 達成率 -->
-                    <div class="doughnut-card">
-                        <div class="doughnut-card-header">
-                            <i class="fa-solid fa-bullseye icon-purple"></i>
-                            <h3 class="doughnut-card-title">三、AD 達成率</h3>
-                        </div>
-                        <div class="doughnut-chart-wrapper">
-                            <canvas id="adDoughnut"></canvas>
-                            <div class="doughnut-center-text" id="adCenterText">
-                                <span class="rate-val">--%</span>
-                                <span class="count-val">--/-- 件</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 4. 資助計畫 達成率 -->
-                    <div class="doughnut-card">
-                        <div class="doughnut-card-header">
-                            <i class="fa-solid fa-handshake-angle icon-amber"></i>
-                            <h3 class="doughnut-card-title">四、資助計畫 達成率</h3>
-                        </div>
-                        <div class="doughnut-chart-wrapper">
-                            <canvas id="grantProjectDoughnut"></canvas>
-                            <div class="doughnut-center-text" id="grantProjectCenterText">
-                                <span class="rate-val">--%</span>
-                                <span class="count-val">--/-- 件</span>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- 五、權利金（110-115年度每年金額，單位萬元） -->
-                <div class="card-box margin-top-card">
-                    <div class="card-box-header">
-                        <h3 class="sub-chart-title"><i class="fa-solid fa-coins text-amber"></i> 五、權利金收入（110 - 115 年度，單位：萬元）</h3>
-                    </div>
-                    <div class="chart-container">
-                        <canvas id="royaltyYearlyChart"></canvas>
-                    </div>
-                </div>
-            </section>
+            </div>
 
 
-            <!-- ================= 第三項：授權及資助件數及金額同期比較 (YoY) ================= -->
-            <section class="section-block" id="section-3">
-                <div class="block-header date-header-flex">
-                    <div>
+            <!-- ================================================================= -->
+            <!-- 📌 主分頁二：技術授權業務資料                                       -->
+            <!-- ================================================================= -->
+            <div class="tab-content" id="tab-2">
+                
+                <!-- 1 ~ 4. 四大達成率環形圖 (漸層風) -->
+                <section class="section-block">
+                    <div class="block-header">
                         <h2 class="block-title">
-                            <span class="block-num">三</span> 授權及資助件數及金額同期比較（本年度與上一年度同一年月日比較）
+                            <span class="block-num">一~四</span> 各項目標達成率總覽（目標可右上角隨時編輯）
                         </h2>
-                        <p class="block-desc">輸入任意年月日自動比對前一年同期數據（預設為今天日期），直接由圖表呈現增減件數、金額與 % 數</p>
+                        <p class="block-desc">包含技術授權、項次、AD 與資助計畫之當年度達成進度百分比與件數對比</p>
                     </div>
 
-                    <div class="date-picker-box">
-                        <label for="yoy-date-input"><i class="fa-regular fa-calendar-check"></i> 請選擇基準年月日：</label>
-                        <div class="date-input-group">
-                            <input type="date" id="yoy-date-input" onchange="handleYoyDateChange(this.value)" />
-                            <button class="btn-quick-date" onclick="setQuickDate('today')">今天</button>
-                            <button class="btn-quick-date" onclick="setQuickDate('115-09-19')">範例 (115.09.19)</button>
+                    <div class="kpi-doughnut-grid">
+                        
+                        <!-- 1. 技術授權 達成率 -->
+                        <div class="doughnut-card">
+                            <div class="doughnut-card-header">
+                                <i class="fa-solid fa-key icon-teal"></i>
+                                <h3 class="doughnut-card-title">1. 技術授權 達成率</h3>
+                            </div>
+                            <div class="doughnut-chart-wrapper">
+                                <canvas id="techLicenseDoughnut"></canvas>
+                                <div class="doughnut-center-text" id="techLicenseCenterText">
+                                    <span class="rate-val">--%</span>
+                                    <span class="count-val">--/-- 件</span>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
 
-                <div class="date-compare-banner">
-                    <div class="banner-date-box">
-                        <span class="banner-tag">本期基準日</span>
-                        <span class="banner-date" id="label-curr-date">115 年 09 月 24 日</span>
-                    </div>
-                    <div class="banner-vs">VS</div>
-                    <div class="banner-date-box">
-                        <span class="banner-tag">前一年同期日</span>
-                        <span class="banner-date" id="label-prev-date">114 年 09 月 24 日</span>
-                    </div>
-                </div>
+                        <!-- 2. 技術授權項次 達成率 -->
+                        <div class="doughnut-card">
+                            <div class="doughnut-card-header">
+                                <i class="fa-solid fa-list-check icon-blue"></i>
+                                <h3 class="doughnut-card-title">2. 技術授權項次 達成率</h3>
+                            </div>
+                            <div class="doughnut-chart-wrapper">
+                                <canvas id="techItemDoughnut"></canvas>
+                                <div class="doughnut-center-text" id="techItemCenterText">
+                                    <span class="rate-val">--%</span>
+                                    <span class="count-val">--/-- 項</span>
+                                </div>
+                            </div>
+                        </div>
 
-                <div class="card-box yoy-charts-two-col">
-                    <div class="sub-chart-box">
-                        <div class="chart-top-bar">
-                            <h4 class="sub-chart-title"><i class="fa-solid fa-file-signature text-teal"></i> 業務件數同期對比 (單位：件)</h4>
-                            <div class="summary-badge" id="cases-summary-badge">--</div>
+                        <!-- 3. AD 達成率 -->
+                        <div class="doughnut-card">
+                            <div class="doughnut-card-header">
+                                <i class="fa-solid fa-bullseye icon-purple"></i>
+                                <h3 class="doughnut-card-title">3. AD 達成率</h3>
+                            </div>
+                            <div class="doughnut-chart-wrapper">
+                                <canvas id="adDoughnut"></canvas>
+                                <div class="doughnut-center-text" id="adCenterText">
+                                    <span class="rate-val">--%</span>
+                                    <span class="count-val">--/-- 件</span>
+                                </div>
+                            </div>
                         </div>
-                        <div class="chart-container-lg">
-                            <canvas id="yoyCasesChart"></canvas>
+
+                        <!-- 4. 資助計畫 達成率 -->
+                        <div class="doughnut-card">
+                            <div class="doughnut-card-header">
+                                <i class="fa-solid fa-handshake-angle icon-amber"></i>
+                                <h3 class="doughnut-card-title">4. 資助計畫 達成率</h3>
+                            </div>
+                            <div class="doughnut-chart-wrapper">
+                                <canvas id="grantProjectDoughnut"></canvas>
+                                <div class="doughnut-center-text" id="grantProjectCenterText">
+                                    <span class="rate-val">--%</span>
+                                    <span class="count-val">--/-- 件</span>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <!-- 5. 權利金（110-115年度每年金額，單位萬元） -->
+                <section class="section-block">
+                    <div class="block-header">
+                        <h2 class="block-title">
+                            <span class="block-num">5</span> 權利金（110 - 115 年度每年金額，單位：萬元）
+                        </h2>
+                        <p class="block-desc">呈現歷年實收權利金收入規模變化與穩定成長趨勢</p>
+                    </div>
+                    <div class="card-box">
+                        <div class="chart-container">
+                            <canvas id="royaltyYearlyChart"></canvas>
                         </div>
                     </div>
+                </section>
 
-                    <div class="sub-chart-box">
-                        <div class="chart-top-bar">
-                            <h4 class="sub-chart-title"><i class="fa-solid fa-sack-dollar text-blue"></i> 業務金額同期對比 (單位：萬元)</h4>
-                            <div class="summary-badge" id="amounts-summary-badge">--</div>
-                        </div>
-                        <div class="chart-container-lg">
-                            <canvas id="yoyAmountChart"></canvas>
+                <!-- 6. 110-115 每年度科技移轉件數 -->
+                <section class="section-block">
+                    <div class="block-header">
+                        <h2 class="block-title">
+                            <span class="block-num">6</span> 110-115 每年度科技移轉件數（專屬授權、非專屬授權、有償材料移轉）
+                        </h2>
+                        <p class="block-desc">包含專屬授權、非專屬授權及有償材料移轉之歷年堆疊數量（例：114年專屬授權2件、非專屬授權34件、有償材料移轉111件）</p>
+                    </div>
+                    <div class="card-box">
+                        <div class="chart-container">
+                            <canvas id="techTransferBreakdownChart"></canvas>
                         </div>
                     </div>
-                </div>
+                </section>
 
-            </section>
+                <!-- 7. 110-115 每年度授權合約總價值及科技移轉總收入（現金＋股票） -->
+                <section class="section-block">
+                    <div class="block-header">
+                        <h2 class="block-title">
+                            <span class="block-num">7</span> 110-115 每年度授權合約總價值與科技移轉總收入（現金＋股票，單位：萬元）
+                        </h2>
+                        <p class="block-desc">比較歷年授權合約總價值（含未來里程碑與預估對價）與實際入帳之科技移轉總收入（現金與股票計價）</p>
+                    </div>
+                    <div class="card-box">
+                        <div class="chart-container">
+                            <canvas id="contractAndIncomeChart"></canvas>
+                        </div>
+                    </div>
+                </section>
+
+            </div>
 
         </main>
 
@@ -251,9 +306,9 @@
 
             <form onsubmit="handleTargetSubmit(event)" class="modal-form">
                 
-                <!-- 一、技術授權 -->
+                <!-- 1. 技術授權 -->
                 <div class="form-row-group">
-                    <h4>一、技術授權</h4>
+                    <h4>1. 技術授權</h4>
                     <div class="form-row-inputs">
                         <div class="field-box">
                             <label>目標件數</label>
@@ -266,9 +321,9 @@
                     </div>
                 </div>
 
-                <!-- 二、技術授權項次 -->
+                <!-- 2. 技術授權項次 -->
                 <div class="form-row-group">
-                    <h4>二、技術授權項次</h4>
+                    <h4>2. 技術授權項次</h4>
                     <div class="form-row-inputs">
                         <div class="field-box">
                             <label>目標項次</label>
@@ -281,9 +336,9 @@
                     </div>
                 </div>
 
-                <!-- 三、AD 達成率 -->
+                <!-- 3. AD 達成率 -->
                 <div class="form-row-group">
-                    <h4>三、AD 達成率</h4>
+                    <h4>3. AD 達成率</h4>
                     <div class="form-row-inputs">
                         <div class="field-box">
                             <label>目標件數</label>
@@ -296,9 +351,9 @@
                     </div>
                 </div>
 
-                <!-- 四、資助計畫 -->
+                <!-- 4. 資助計畫 -->
                 <div class="form-row-group">
-                    <h4>四、資助計畫</h4>
+                    <h4>4. 資助計畫</h4>
                     <div class="form-row-inputs">
                         <div class="field-box">
                             <label>目標件數</label>
