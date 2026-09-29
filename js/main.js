@@ -1,6 +1,9 @@
 /* ==============================================
-   1. 完整資料庫定義 (已更新最新數據)
+   1. 完整資料庫定義
    ============================================== */
+
+// 註冊 ChartDataLabels 外掛
+Chart.register(ChartDataLabels);
 
 let targetConfig = {
     techLicense:   { target: 37, actual: 10, unit: "件" },
@@ -23,7 +26,7 @@ const revenueData = [
     { year: "111年度", techTransfer: 6185,  industryCoop: 11196 },
     { year: "112年度", techTransfer: 4653,  industryCoop: 14335 },
     { year: "113年度", techTransfer: 4271,  industryCoop: 7187  },
-    { year: "114年度", techTransfer: 39358, industryCoop: 8206  },
+    { year: "114年度", techTransfer: 3935, industryCoop: 8206  },
     { year: "115年度", techTransfer: 2708,  industryCoop: 4274  }
 ];
 
@@ -50,7 +53,7 @@ const contractAndIncomeData = [
     { year: "111年度", contractValue: 35661, incomeValue: 6185  },
     { year: "112年度", contractValue: 8252,  incomeValue: 4653  },
     { year: "113年度", contractValue: 4524,  incomeValue: 4271  },
-    { year: "114年度", contractValue: 4843,  incomeValue: 39358 },
+    { year: "114年度", contractValue: 4843,  incomeValue: 3935 },
     { year: "115年度", contractValue: 2199,  incomeValue: 2708  }
 ];
 
@@ -86,12 +89,13 @@ let contractAndIncomeChartInstance = null;
 
 Chart.defaults.font.family = "'Plus Jakarta Sans', 'Noto Sans TC', sans-serif";
 Chart.defaults.color = '#64748B';
+Chart.defaults.plugins.datalabels.display = false; // 全局預設不顯示，僅特定圖表開啟
 
 function getTranslucentGradient(ctx, colorTopHex, opacityTop, opacityBottom) {
     const gradient = ctx.createLinearGradient(0, 0, 0, 320);
     const rgb = hexToRgb(colorTopHex);
-    gradient.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacityTop})`);
-    gradient.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, ${opacityBottom})`);
+    gradient.addColorStop(0, `rgba(\({rgb.r},\){rgb.g}, \({rgb.b},\){opacityTop})`);
+    gradient.addColorStop(1, `rgba(\({rgb.r},\){rgb.g}, \({rgb.b},\){opacityBottom})`);
     return gradient;
 }
 
@@ -146,14 +150,14 @@ function renderSingleDoughnut(canvasId, textContainerId, itemKey, hexColor) {
 
     const centerEl = document.getElementById(textContainerId);
     centerEl.querySelector('.rate-val').textContent = `${rate}%`;
-    centerEl.querySelector('.count-val').textContent = `${actual}/${target} ${cfg.unit}`;
+    centerEl.querySelector('.count-val').textContent = `\({actual}/\){target} ${cfg.unit}`;
 
     if (doughnutInstances[canvasId]) doughnutInstances[canvasId].destroy();
 
     const gradient = ctx.createLinearGradient(0, 0, 160, 160);
     const rgb = hexToRgb(hexColor);
-    gradient.addColorStop(0, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.9)`);
-    gradient.addColorStop(1, `rgba(${rgb.r}, ${rgb.g}, ${rgb.b}, 0.5)`);
+    gradient.addColorStop(0, `rgba(\({rgb.r},\){rgb.g}, ${rgb.b}, 0.9)`);
+    gradient.addColorStop(1, `rgba(\({rgb.r},\){rgb.g}, ${rgb.b}, 0.5)`);
 
     doughnutInstances[canvasId] = new Chart(ctx, {
         type: 'doughnut',
@@ -173,7 +177,7 @@ function renderSingleDoughnut(canvasId, textContainerId, itemKey, hexColor) {
             plugins: {
                 legend: { display: false },
                 tooltip: {
-                    callbacks: { label: (context) => ` ${context.label}: ${context.raw} ${cfg.unit}` }
+                    callbacks: { label: (context) => ` \({context.label}:\){context.raw} ${cfg.unit}` }
                 }
             }
         }
@@ -187,28 +191,22 @@ function renderAllDoughnuts() {
     renderSingleDoughnut('grantProjectDoughnut', 'grantProjectCenterText', 'grantProject', '#0284C7');
 }
 
-/* 5. 權利金（折線圖 Line Chart） */
 function renderRoyaltyChart() {
     const ctx = document.getElementById('royaltyYearlyChart').getContext('2d');
-    const glassGradient = getTranslucentGradient(ctx, '#3B82F6', 0.3, 0.02);
+    const glassGradient = getTranslucentGradient(ctx, '#3B82F6', 0.8, 0.2);
 
     royaltyChartInstance = new Chart(ctx, {
-        type: 'line', // 👈 將這裡從 'bar' 改為 'line'
+        type: 'bar',
         data: {
             labels: royaltyData.map(item => item.year),
             datasets: [{
                 label: '權利金 (萬元)',
                 data: royaltyData.map(item => item.amount),
-                borderColor: '#2563EB',             // 折線顏色
-                backgroundColor: glassGradient,       // 折線下方漸層填滿
-                fill: true,                           // 開啟漸層填滿
-                borderWidth: 3,                       // 線條粗細
-                pointBackgroundColor: '#2563EB',      // 節點顏色
-                pointBorderColor: '#FFFFFF',
-                pointBorderWidth: 2,
-                pointRadius: 6,                       // 節點大小
-                pointHoverRadius: 8,
-                tension: 0.35                         // 圓滑平滑曲線
+                backgroundColor: glassGradient,
+                borderColor: 'rgba(59, 130, 246, 0.6)',
+                borderWidth: 1,
+                borderRadius: 8,
+                barPercentage: 0.55
             }]
         },
         options: {
@@ -222,15 +220,11 @@ function renderRoyaltyChart() {
     });
 }
 
-/* 6. 年度科技移轉件數（顏色加深：深綠、淺綠、黃） */
 function renderTechTransferBreakdownChart() {
     const ctx = document.getElementById('techTransferBreakdownChart').getContext('2d');
     
-    // ✨ 專屬授權：深綠色 (#059669)
     const grad1 = getTranslucentGradient(ctx, '#059669', 0.9, 0.4);
-    // ✨ 非專屬授權：淺綠色 (#34D399)
     const grad2 = getTranslucentGradient(ctx, '#34D399', 0.85, 0.35);
-    // ✨ 有償材料移轉：黃色 (#FBBF24)
     const grad3 = getTranslucentGradient(ctx, '#FBBF24', 0.85, 0.35);
 
     techTransferBreakdownChartInstance = new Chart(ctx, {
@@ -324,9 +318,10 @@ function handleTargetSubmit(e) {
 }
 
 /* ==============================================
-   4. 第一分頁圖表 (1. 資助研究計畫 & 2. YoY 同期比較 & 3. 科技移轉)
+   4. 第一分頁圖表
    ============================================== */
 
+/* ✨ 1. 資助計畫簽約件數及金額 (DataLabels 直接顯示數字，折線直線無彎曲 tension: 0) */
 function renderSponsoredYearlyChart() {
     const ctx = document.getElementById('sponsoredYearlyChart').getContext('2d');
     const barGradient = getTranslucentGradient(ctx, '#3B82F6', 0.75, 0.2);
@@ -350,9 +345,17 @@ function renderSponsoredYearlyChart() {
                     pointBorderWidth: 2,
                     pointRadius: 6, 
                     pointHoverRadius: 8,
-                    tension: 0.3,
+                    tension: 0, // ✨ 設為 0 表示直線無彎曲
                     yAxisID: 'yCases',
-                    order: 1 
+                    order: 1,
+                    datalabels: {
+                        display: true, // ✨ 直接顯示文字
+                        anchor: 'end',
+                        align: 'top',
+                        font: { weight: 'bold', size: 12 },
+                        color: '#059669',
+                        formatter: (val) => `${val} 件`
+                    }
                 },
                 { 
                     type: 'bar', 
@@ -365,13 +368,22 @@ function renderSponsoredYearlyChart() {
                     barPercentage: 0.55,
                     categoryPercentage: 0.7,
                     yAxisID: 'yAmount',
-                    order: 2 
+                    order: 2,
+                    datalabels: {
+                        display: true, // ✨ 直接顯示文字
+                        anchor: 'end',
+                        align: 'top',
+                        font: { weight: 'bold', size: 11 },
+                        color: '#2563EB',
+                        formatter: (val) => `${val.toLocaleString()} 萬`
+                    }
                 }
             ]
         },
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: { padding: { top: 25 } },
             onClick: (event, elements) => {
                 if (elements.length > 0) openMonthlyDrawer(elements[0].index);
             },
@@ -428,6 +440,7 @@ function updateSponsoredMonthlyChart(yearIndex) {
                     pointBorderColor: '#FFFFFF',
                     pointBorderWidth: 2,
                     pointRadius: 5, 
+                    tension: 0,
                     yAxisID: 'yMonthCases',
                     order: 1 
                 },
@@ -455,6 +468,7 @@ function updateSponsoredMonthlyChart(yearIndex) {
     });
 }
 
+/* 2. 科技移轉收入及產學合作實收經費 (第二項) */
 function renderRevenueYearlyChart() {
     const ctx = document.getElementById('revenueYearlyChart').getContext('2d');
     const grad1 = getTranslucentGradient(ctx, '#38BDF8', 0.8, 0.2);
@@ -501,8 +515,8 @@ function handleYoyDateChange(selectedDateStr) {
         const prevYearRoc = currYearRoc - 1;
 
         dataObj = {
-            currDateLabel: `${currYearRoc} 年 ${month} 月 ${day} 日`,
-            prevDateLabel: `${prevYearRoc} 年 ${month} 月 ${day} 日`,
+            currDateLabel: `\({currYearRoc} 年\){month} 月 ${day} 日`,
+            prevDateLabel: `\({prevYearRoc} 年\){month} 月 ${day} 日`,
             cases: { techLicense: 10, materialTransfer: 105, sponsoredProject: 20 },
             casesPrev: { techLicense: 31, materialTransfer: 85, sponsoredProject: 24 },
             amounts: { techRevenueTotal: 2708, royalty: 794, contractValueTotal: 2199, techRevenueCashStock: 5218, sponsoredRealized: 4274 },
@@ -516,7 +530,7 @@ function handleYoyDateChange(selectedDateStr) {
     renderYoyCharts(dataObj);
 }
 
-/* 滑鼠移動到柱狀圖上時，於 Tooltip 動態呈現本期數值、增減件數/金額與 % 數 */
+/* ✨ 3. 授權與資助件數及金額同期比較 (第三項：X 軸雙行折行 + 簡潔上標 ± 數字(%)) */
 function renderYoyCharts(dataObj) {
     // 1. 件數同期對比圖表
     const ctxCases = document.getElementById('yoyCasesChart').getContext('2d');
@@ -540,33 +554,29 @@ function renderYoyCharts(dataObj) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: { padding: { top: 25 } },
             plugins: {
                 legend: { position: 'top' },
-                tooltip: {
-                    padding: 12,
-                    titleFont: { size: 14, weight: 'bold' },
-                    bodyFont: { size: 13 },
-                    callbacks: {
-                        label: (context) => {
-                            const idx = context.dataIndex;
-                            const isCurr = context.datasetIndex === 0;
-                            const val = context.raw;
-
-                            if (!isCurr) {
-                                return `去年同期: ${val} 件`;
-                            }
-
-                            const prevVal = casesPrevArray[idx];
-                            const diff = val - prevVal;
-                            const percent = prevVal > 0 ? ((Math.abs(diff) / prevVal) * 100).toFixed(1) : 0;
-                            const sign = diff >= 0 ? '+' : '-';
-                            const arrow = diff > 0 ? '↑' : (diff < 0 ? '↓' : '–');
-
-                            return [
-                                `本期數據: ${val} 件`,
-                                `與去年同期相比: ${arrow} ${sign}${Math.abs(diff)} 件 (${sign}${percent}%)`
-                            ];
-                        }
+                datalabels: {
+                    display: (context) => context.datasetIndex === 0, // 僅在本期柱體顯示
+                    anchor: 'end',
+                    align: 'top',
+                    font: { weight: 'bold', size: 11 },
+                    formatter: (value, context) => {
+                        const idx = context.dataIndex;
+                        const prevVal = casesPrevArray[idx];
+                        const diff = value - prevVal;
+                        const percent = prevVal > 0 ? ((Math.abs(diff) / prevVal) * 100).toFixed(1) : 0;
+                        
+                        if (diff === 0) return `0件 (0%)`;
+                        const sign = diff > 0 ? '+' : '-';
+                        const arrow = diff > 0 ? '↑' : '↓';
+                        return `\({arrow}\){sign}\({Math.abs(diff)}件 (\){sign}${percent}%)`;
+                    },
+                    color: (context) => {
+                        const idx = context.dataIndex;
+                        const diff = casesCurrArray[idx] - casesPrevArray[idx];
+                        return diff >= 0 ? '#059669' : '#DC2626';
                     }
                 }
             },
@@ -577,7 +587,7 @@ function renderYoyCharts(dataObj) {
         }
     });
 
-    // 2. 金額同期對比圖表
+    // 2. 金額同期對比圖表 (✨ X 軸文字改為雙行陣列, 避免斜打)
     const ctxAmount = document.getElementById('yoyAmountChart').getContext('2d');
     if (yoyAmountChartInstance) yoyAmountChartInstance.destroy();
 
@@ -590,7 +600,14 @@ function renderYoyCharts(dataObj) {
     yoyAmountChartInstance = new Chart(ctxAmount, {
         type: 'bar',
         data: {
-            labels: ['科技移轉總收入', '權利金', '合約總價值(現+股)', '科移收入(現+股)', '資助計畫實收'],
+            // ✨ 雙行折行標籤 (解決斜著顯示問題)
+            labels: [
+                ['科技移轉', '總收入'],
+                '權利金',
+                ['合約總價值', '(現+股)'],
+                ['科移收入', '(現+股)'],
+                ['資助計畫', '實收']
+            ],
             datasets: [
                 { label: '本期金額 (萬元)', data: amtCurrArray, backgroundColor: gradAmtCurr, borderRadius: 6, barPercentage: 0.6 },
                 { label: '去年同期金額 (萬元)', data: amtPrevArray, backgroundColor: gradAmtPrev, borderRadius: 6, barPercentage: 0.6 }
@@ -599,38 +616,40 @@ function renderYoyCharts(dataObj) {
         options: {
             responsive: true,
             maintainAspectRatio: false,
+            layout: { padding: { top: 25 } },
             plugins: {
                 legend: { position: 'top' },
-                tooltip: {
-                    padding: 12,
-                    titleFont: { size: 14, weight: 'bold' },
-                    bodyFont: { size: 13 },
-                    callbacks: {
-                        label: (context) => {
-                            const idx = context.dataIndex;
-                            const isCurr = context.datasetIndex === 0;
-                            const val = context.raw;
-
-                            if (!isCurr) {
-                                return `去年同期: ${val.toLocaleString()} 萬元`;
-                            }
-
-                            const prevVal = amtPrevArray[idx];
-                            const diff = val - prevVal;
-                            const percent = prevVal > 0 ? ((Math.abs(diff) / prevVal) * 100).toFixed(1) : 0;
-                            const sign = diff >= 0 ? '+' : '-';
-                            const arrow = diff > 0 ? '↑' : (diff < 0 ? '↓' : '–');
-
-                            return [
-                                `本期數據: ${val.toLocaleString()} 萬元`,
-                                `與去年同期相比: ${arrow} ${sign}${Math.abs(diff).toLocaleString()} 萬元 (${sign}${percent}%)`
-                            ];
-                        }
+                datalabels: {
+                    display: (context) => context.datasetIndex === 0, // 僅在本期柱體顯示
+                    anchor: 'end',
+                    align: 'top',
+                    font: { weight: 'bold', size: 10.5 },
+                    formatter: (value, context) => {
+                        const idx = context.dataIndex;
+                        const prevVal = amtPrevArray[idx];
+                        const diff = value - prevVal;
+                        const percent = prevVal > 0 ? ((Math.abs(diff) / prevVal) * 100).toFixed(1) : 0;
+                        
+                        if (diff === 0) return `0萬 (0%)`;
+                        const sign = diff > 0 ? '+' : '-';
+                        const arrow = diff > 0 ? '↑' : '↓';
+                        return `\({arrow}\){sign}\({Math.abs(diff).toLocaleString()}萬 (\){sign}${percent}%)`;
+                    },
+                    color: (context) => {
+                        const idx = context.dataIndex;
+                        const diff = amtCurrArray[idx] - amtPrevArray[idx];
+                        return diff >= 0 ? '#059669' : '#DC2626';
                     }
                 }
             },
             scales: {
-                x: { grid: { display: false } },
+                x: { 
+                    grid: { display: false },
+                    ticks: {
+                        maxRotation: 0, // ✨ 強制水平不打斜
+                        minRotation: 0
+                    }
+                },
                 y: { beginAtZero: true, grid: { color: '#F1F5F9' }, title: { display: true, text: '金額 (萬元)' } }
             }
         }
