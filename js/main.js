@@ -501,8 +501,8 @@ function handleYoyDateChange(selectedDateStr) {
         const prevYearRoc = currYearRoc - 1;
 
         dataObj = {
-            currDateLabel: `${currYearRoc} 年 ${month} 月 ${day} 日`,
-            prevDateLabel: `${prevYearRoc} 年 ${month} 月 ${day} 日`,
+            currDateLabel: `\({currYearRoc} 年\){month} 月 ${day} 日`,
+            prevDateLabel: `\({prevYearRoc} 年\){month} 月 ${day} 日`,
             cases: { techLicense: 10, materialTransfer: 105, sponsoredProject: 20 },
             casesPrev: { techLicense: 31, materialTransfer: 85, sponsoredProject: 24 },
             amounts: { techRevenueTotal: 2708, royalty: 794, contractValueTotal: 2199, techRevenueCashStock: 5218, sponsoredRealized: 4274 },
@@ -510,13 +510,16 @@ function handleYoyDateChange(selectedDateStr) {
         };
     }
 
-    document.getElementById('label-curr-date').textContent = dataObj.currDateLabel;
-    document.getElementById('label-prev-date').textContent = dataObj.prevDateLabel;
+    // 判斷 HTML 是否有 Banner 元素再賦值，避免 null 報錯中斷執行
+    const elCurr = document.getElementById('label-curr-date');
+    const elPrev = document.getElementById('label-prev-date');
+    if (elCurr) elCurr.textContent = dataObj.currDateLabel;
+    if (elPrev) elPrev.textContent = dataObj.prevDateLabel;
 
     renderYoyCharts(dataObj);
 }
 
-/* 滑鼠移動到柱狀圖上時，於 Tooltip 動態呈現本期數值、增減件數/金額與 % 數 */
+/* 同期對比圖表渲染 (修復語法錯誤並動態標註增減數據於柱狀圖上方) */
 function renderYoyCharts(dataObj) {
     const diffLabelPlugin = {
         id: 'diffLabelPlugin',
@@ -533,7 +536,9 @@ function renderYoyCharts(dataObj) {
                 
                 const sign = diff > 0 ? '+' : (diff < 0 ? '-' : '');
                 const arrow = diff > 0 ? '↑' : (diff < 0 ? '↓' : '–');
-                const text = diff !== 0 ? `\({arrow}\){Math.abs(diff)} (\({sign}\){percent}%)` : `– 0 (0%)`;
+                
+                // ✅ 修正模板字面值語法
+                const text = diff !== 0 ? (arrow + ' ' + Math.abs(diff) + ' (' + sign + percent + '%)') : '– 0 (0%)';
                 
                 ctx.fillStyle = diff > 0 ? '#E11D48' : (diff < 0 ? '#059669' : '#64748B');
                 ctx.font = 'bold 13px "Plus Jakarta Sans", "Noto Sans TC", sans-serif';
