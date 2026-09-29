@@ -23,7 +23,7 @@ const revenueData = [
     { year: "111年度", techTransfer: 6185,  industryCoop: 11196 },
     { year: "112年度", techTransfer: 4653,  industryCoop: 14335 },
     { year: "113年度", techTransfer: 4271,  industryCoop: 7187  },
-    { year: "114年度", techTransfer: 39358, industryCoop: 8206  },
+    { year: "114年度", techTransfer: 3935, industryCoop: 8206  },
     { year: "115年度", techTransfer: 2708,  industryCoop: 4274  }
 ];
 
@@ -50,7 +50,7 @@ const contractAndIncomeData = [
     { year: "111年度", contractValue: 35661, incomeValue: 6185  },
     { year: "112年度", contractValue: 8252,  incomeValue: 4653  },
     { year: "113年度", contractValue: 4524,  incomeValue: 4271  },
-    { year: "114年度", contractValue: 4843,  incomeValue: 39358 },
+    { year: "114年度", contractValue: 4843,  incomeValue: 3935 },
     { year: "115年度", contractValue: 2199,  incomeValue: 2708  }
 ];
 
