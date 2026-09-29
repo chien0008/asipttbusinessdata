@@ -518,16 +518,42 @@ function handleYoyDateChange(selectedDateStr) {
 
 /* 滑鼠移動到柱狀圖上時，於 Tooltip 動態呈現本期數值、增減件數/金額與 % 數 */
 function renderYoyCharts(dataObj) {
-    // 1. 件數同期對比圖表
+    const diffLabelPlugin = {
+        id: 'diffLabelPlugin',
+        afterDatasetsDraw(chart) {
+            const { ctx, data } = chart;
+            ctx.save();
+            const metaCurr = chart.getDatasetMeta(0);
+            
+            metaCurr.data.forEach((bar, index) => {
+                const valCurr = data.datasets[0].data[index];
+                const valPrev = data.datasets[1].data[index];
+                const diff = valCurr - valPrev;
+                const percent = valPrev > 0 ? ((Math.abs(diff) / valPrev) * 100).toFixed(1) : 0;
+                
+                const sign = diff > 0 ? '+' : (diff < 0 ? '-' : '');
+                const arrow = diff > 0 ? '↑' : (diff < 0 ? '↓' : '–');
+                const text = diff !== 0 ? `\({arrow}\){Math.abs(diff)} (\({sign}\){percent}%)` : `– 0 (0%)`;
+                
+                ctx.fillStyle = diff > 0 ? '#E11D48' : (diff < 0 ? '#059669' : '#64748B');
+                ctx.font = 'bold 13px "Plus Jakarta Sans", "Noto Sans TC", sans-serif';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'bottom';
+                
+                ctx.fillText(text, bar.x, bar.y - 8);
+            });
+            ctx.restore();
+        }
+    };
+
     const ctxCases = document.getElementById('yoyCasesChart').getContext('2d');
     if (yoyCasesChartInstance) yoyCasesChartInstance.destroy();
-
+    
     const gradCurr = getTranslucentGradient(ctxCases, '#3B82F6', 0.8, 0.25);
     const gradPrev = getTranslucentGradient(ctxCases, '#CBD5E1', 0.7, 0.2);
-
     const casesCurrArray = [dataObj.cases.techLicense, dataObj.cases.materialTransfer, dataObj.cases.sponsoredProject];
     const casesPrevArray = [dataObj.casesPrev.techLicense, dataObj.casesPrev.materialTransfer, dataObj.casesPrev.sponsoredProject];
-
+    
     yoyCasesChartInstance = new Chart(ctxCases, {
         type: 'bar',
         data: {
@@ -537,39 +563,12 @@ function renderYoyCharts(dataObj) {
                 { label: '去年同期件數', data: casesPrevArray, backgroundColor: gradPrev, borderRadius: 6, barPercentage: 0.6 }
             ]
         },
+        plugins: [diffLabelPlugin],
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'top' },
-                tooltip: {
-                    padding: 12,
-                    titleFont: { size: 14, weight: 'bold' },
-                    bodyFont: { size: 13 },
-                    callbacks: {
-                        label: (context) => {
-                            const idx = context.dataIndex;
-                            const isCurr = context.datasetIndex === 0;
-                            const val = context.raw;
-
-                            if (!isCurr) {
-                                return `去年同期: ${val} 件`;
-                            }
-
-                            const prevVal = casesPrevArray[idx];
-                            const diff = val - prevVal;
-                            const percent = prevVal > 0 ? ((Math.abs(diff) / prevVal) * 100).toFixed(1) : 0;
-                            const sign = diff >= 0 ? '+' : '-';
-                            const arrow = diff > 0 ? '↑' : (diff < 0 ? '↓' : '–');
-
-                            return [
-                                `本期數據: ${val} 件`,
-                                `與去年同期相比: ${arrow} ${sign}${Math.abs(diff)} 件 (${sign}${percent}%)`
-                            ];
-                        }
-                    }
-                }
-            },
+            layout: { padding: { top: 30 } },
+            plugins: { legend: { position: 'top' }, tooltip: { enabled: false } },
             scales: {
                 x: { grid: { display: false } },
                 y: { beginAtZero: true, grid: { color: '#F1F5F9' }, title: { display: true, text: '件數 (件)' } }
@@ -577,58 +576,29 @@ function renderYoyCharts(dataObj) {
         }
     });
 
-    // 2. 金額同期對比圖表
     const ctxAmount = document.getElementById('yoyAmountChart').getContext('2d');
     if (yoyAmountChartInstance) yoyAmountChartInstance.destroy();
-
+    
     const gradAmtCurr = getTranslucentGradient(ctxAmount, '#10B981', 0.8, 0.25);
     const gradAmtPrev = getTranslucentGradient(ctxAmount, '#94A3B8', 0.7, 0.2);
-
     const amtCurrArray = Object.values(dataObj.amounts);
     const amtPrevArray = Object.values(dataObj.amountsPrev);
-
+    
     yoyAmountChartInstance = new Chart(ctxAmount, {
         type: 'bar',
         data: {
-            labels: ['科技移轉總收入', '權利金', '合約總價值(現+股)', '科移收入(現+股)', '資助計畫實收'],
+            labels: ['科技移轉總收入', '權利金', '合約總價值', '科移收入', '資助計畫實收'],
             datasets: [
                 { label: '本期金額 (萬元)', data: amtCurrArray, backgroundColor: gradAmtCurr, borderRadius: 6, barPercentage: 0.6 },
                 { label: '去年同期金額 (萬元)', data: amtPrevArray, backgroundColor: gradAmtPrev, borderRadius: 6, barPercentage: 0.6 }
             ]
         },
+        plugins: [diffLabelPlugin],
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                legend: { position: 'top' },
-                tooltip: {
-                    padding: 12,
-                    titleFont: { size: 14, weight: 'bold' },
-                    bodyFont: { size: 13 },
-                    callbacks: {
-                        label: (context) => {
-                            const idx = context.dataIndex;
-                            const isCurr = context.datasetIndex === 0;
-                            const val = context.raw;
-
-                            if (!isCurr) {
-                                return `去年同期: ${val.toLocaleString()} 萬元`;
-                            }
-
-                            const prevVal = amtPrevArray[idx];
-                            const diff = val - prevVal;
-                            const percent = prevVal > 0 ? ((Math.abs(diff) / prevVal) * 100).toFixed(1) : 0;
-                            const sign = diff >= 0 ? '+' : '-';
-                            const arrow = diff > 0 ? '↑' : (diff < 0 ? '↓' : '–');
-
-                            return [
-                                `本期數據: ${val.toLocaleString()} 萬元`,
-                                `與去年同期相比: ${arrow} ${sign}${Math.abs(diff).toLocaleString()} 萬元 (${sign}${percent}%)`
-                            ];
-                        }
-                    }
-                }
-            },
+            layout: { padding: { top: 30 } },
+            plugins: { legend: { position: 'top' }, tooltip: { enabled: false } },
             scales: {
                 x: { grid: { display: false } },
                 y: { beginAtZero: true, grid: { color: '#F1F5F9' }, title: { display: true, text: '金額 (萬元)' } }
