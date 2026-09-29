@@ -52,107 +52,88 @@
             <!-- ================================================================= -->
             <div class="tab-content active" id="tab-1">
                 
-                <!-- 資助計畫簽約件數及金額 -->
-                <section class="section-block">
-                    <div class="block-header">
-                        <h2 class="block-title">
-                            <span class="block-num">1</span> 資助計畫簽約件數及金額
-                        </h2>
-                        <p class="block-desc">點選表中任一年份可展開每月明細</p>
-                    </div>
-
-                    <div class="card-box">
-                        <div class="chart-container">
-                            <canvas id="sponsoredYearlyChart"></canvas>
-                        </div>
-                    </div>
-
-                    <div class="collapsed-drawer" id="monthly-drawer">
-                        <div class="card-box drawer-card">
-                            <div class="drawer-header">
-                                <h3 class="drawer-title">
-                                    <i class="fa-solid fa-calendar-days"></i> <span id="drilldown-year-title">113 年度</span> 每月簽約件數及金額明細
-                                </h3>
-                                <button class="btn-close-drawer" onclick="closeMonthlyDrawer()">
-                                    <i class="fa-solid fa-xmark"></i> 收合
-                                </button>
-                            </div>
-                            <div class="chart-container">
-                                <canvas id="sponsoredMonthlyChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 授權與資助件數及金額同期比較 -->
-                <section class="section-block">
-                    <div class="block-header date-header-flex">
-                        <div>
-                            <h2 class="block-title">
-                                <span class="block-num">2</span> 授權與資助件數及金額同期比較
-                            </h2>
-                            <p class="block-desc">本年度與上一年度同一日比較 (將滑鼠移至柱狀圖查看詳細增減與%)</p>
-                        </div>
-
-                        <div class="date-picker-box">
-                            <label for="yoy-date-input"><i class="fa-regular fa-calendar-check"></i> 請選擇年月日：</label>
-                            <div class="date-input-group">
-                                <input type="date" id="yoy-date-input" onchange="handleYoyDateChange(this.value)" />
-                                <button class="btn-quick-date" onclick="setQuickDate('today')">今天</button>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="date-compare-banner">
-                        <div class="banner-date-box">
-                            <span class="banner-date" id="label-curr-date">115 年 09 月 24 日</span>
-                        </div>
-                        <div class="banner-vs">VS</div>
-                        <div class="banner-date-box">
-                            <span class="banner-date" id="label-prev-date">114 年 09 月 24 日</span>
-                        </div>
-                    </div>
-
-                    <div class="card-box yoy-charts-two-col">
-                        <div class="sub-chart-box">
-                            <div class="chart-top-bar">
-                                <h4 class="sub-chart-title"><i class="fa-solid fa-file-signature text-teal"></i> 授權與資助業務件數同期對比 (件)</h4>
-                            </div>
-                            <div class="chart-container-lg">
-                                <canvas id="yoyCasesChart"></canvas>
-                            </div>
-                        </div>
-
-                        <div class="sub-chart-box">
-                            <div class="chart-top-bar">
-                                <h4 class="sub-chart-title"><i class="fa-solid fa-sack-dollar text-blue"></i> 授權與資助業務金額同期對比 (萬元)</h4>
-                            </div>
-                            <div class="chart-container-lg">
-                                <canvas id="yoyAmountChart"></canvas>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 科技移轉收入及產學合作實收經費 -->
-                <section class="section-block">
-                    <div class="block-header">
-                        <h2 class="block-title">
-                            <span class="block-num">3</span> 科技移轉收入及產學合作實收經費
-                        </h2>
-                        <p class="block-desc">柱狀呈現各項實收經費，折線代表相加之年度總金額（科技移轉收入＋產學合作實收）</p>
-                    </div>
-
-                    <div class="card-box">
-                        <div class="chart-container">
-                            <canvas id="revenueYearlyChart"></canvas>
-                        </div>
-                    </div>
-                </section>
-
+<!-- 1. 資助計畫簽約件數及金額 -->
+<section class="section-block">
+    <div class="block-header">
+        <h2 class="block-title">
+            <span class="block-num">1</span> 資助計畫簽約件數及金額
+        </h2>
+        <p class="block-desc">點選表中任一年份可展開每月明細</p>
+    </div>
+    <div class="card-box">
+        <div class="chart-container">
+            <canvas id="sponsoredYearlyChart"></canvas>
+        </div>
+    </div>
+    <div class="collapsed-drawer" id="monthly-drawer">
+        <div class="card-box drawer-card">
+            <div class="drawer-header">
+                <h3 class="drawer-title">
+                    <i class="fa-solid fa-calendar-days"></i> <span id="drilldown-year-title">113 年度</span> 每月簽約件數及金額明細
+                </h3>
+                <button class="btn-close-drawer" onclick="closeMonthlyDrawer()">
+                    <i class="fa-solid fa-xmark"></i> 收合
+                </button>
             </div>
+            <div class="chart-container">
+                <canvas id="sponsoredMonthlyChart"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
 
+<!-- 2. 科技移轉收入及產學合作實收經費 (移至第 2 區塊) -->
+<section class="section-block">
+    <div class="block-header">
+        <h2 class="block-title">
+            <span class="block-num">2</span> 科技移轉收入及產學合作實收經費
+        </h2>
+        <p class="block-desc">柱狀呈現各項實收經費，折線代表相加之年度總金額（科技移轉收入＋產學合作實收）</p>
+    </div>
+    <div class="card-box">
+        <div class="chart-container">
+            <canvas id="revenueYearlyChart"></canvas>
+        </div>
+    </div>
+</section>
 
+<!-- 3. 授權與資助件數及金額同期比較 (移至第 3 區塊，移除今天按鈕與對比 Banner) -->
+<section class="section-block">
+    <div class="block-header date-header-flex">
+        <div>
+            <h2 class="block-title">
+                <span class="block-num">3</span> 授權與資助件數及金額同期比較
+            </h2>
+            <p class="block-desc">本年度與上一年度同一日比較 (圖表柱狀上方直接呈現增減數據)</p>
+        </div>
+        <div class="date-picker-box">
+            <label for="yoy-date-input"><i class="fa-regular fa-calendar-check"></i> 請選擇年月日：</label>
+            <div class="date-input-group">
+                <input type="date" id="yoy-date-input" onchange="handleYoyDateChange(this.value)" />
+            </div>
+        </div>
+    </div>
+
+    <div class="card-box yoy-charts-two-col">
+        <div class="sub-chart-box">
+            <div class="chart-top-bar">
+                <h4 class="sub-chart-title"><i class="fa-solid fa-file-signature text-teal"></i> 授權與資助業務件數同期對比 (件)</h4>
+            </div>
+            <div class="chart-container-lg">
+                <canvas id="yoyCasesChart"></canvas>
+            </div>
+        </div>
+
+        <div class="sub-chart-box">
+            <div class="chart-top-bar">
+                <h4 class="sub-chart-title"><i class="fa-solid fa-sack-dollar text-blue"></i> 授權與資助業務金額同期對比 (萬元)</h4>
+            </div>
+            <div class="chart-container-lg">
+                <canvas id="yoyAmountChart"></canvas>
+            </div>
+        </div>
+    </div>
+</section>
             <!-- ================================================================= -->
             <!-- 📌 主分頁二：技術授權業務資料                                       -->
             <!-- ================================================================= -->
